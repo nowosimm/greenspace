@@ -60,8 +60,6 @@ export default function Example() {
             <div className="space-y-12 font-body">
                 <div className="font-semibold text-xl mb-10">New Plant Form</div>
                 <div className="border-b border-gray-900/10 pb-12">
-                    <h2 className="text-base font-semibold leading-7 text-gray-900">Congratulations on your new plant baby! Complete this form to help track your new babies growth and care.</h2>
-
                     <div>
                         <div className='flex mt-10'>
 

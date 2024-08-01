@@ -1,64 +1,65 @@
-import { useEffect, useState } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSun, faDroplet, faSprayCanSparkles, faPlantWilt, faSeedling } from '@fortawesome/free-solid-svg-icons'
+import { Avatar, Text, Button, Paper } from "@mantine/core";
+import { useEffect, useState } from "react";
+import { Container } from "@mantine/core";
+import plant from "./images/plant.jpeg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faSun,
+  faDroplet,
+  faSprayCanSparkles,
+  faPlantWilt,
+  faSeedling,
+} from "@fortawesome/free-solid-svg-icons";
 
-const sunlightIcon = <FontAwesomeIcon icon={faSun} />
-const waterIcon = <FontAwesomeIcon icon={faDroplet} />
-const humidityIcon = <FontAwesomeIcon icon={faSprayCanSparkles} />
-const fertilizeIcon = <FontAwesomeIcon icon={faPlantWilt} />
+const sunlightIcon = <FontAwesomeIcon icon={faSun} />;
+const waterIcon = <FontAwesomeIcon icon={faDroplet} />;
+const humidityIcon = <FontAwesomeIcon icon={faSprayCanSparkles} />;
+const fertilizeIcon = <FontAwesomeIcon icon={faPlantWilt} />;
 
-export default function () {
-    const [plants, setPlants] = useState([]);
-    useEffect(() => {
-        const callServer = async () => {
-            let response = await (await fetch("http://localhost:3000/")).json();
-            setPlants(response)
-        }
-        callServer();
-    }, []);
+export default function UserInfoAction() {
+  const [plants, setPlants] = useState([]);
+  useEffect(() => {
+    const callServer = async () => {
+      let response = await (await fetch("http://localhost:3000/")).json();
+      setPlants(response);
+    };
+    callServer();
+  }, []);
+  return (
+    <div>
+        <h1 className="font-body font-bold mb-5">Tasks for 07.26</h1>     
+      <div className="grid grid-cols-2 gap-5 font-body">
+        {plants.map((p) => (
+          <Paper
+            key={p._id}
+            radius="md"
+            withBorder
+            p="lg"
+            bg="var(--mantine-color-body)"
+          >
+            <Avatar src={plant} size={120} radius={120} mx="auto" />
+            <Text ta="center" fz="lg" fw={500} mt="md">
+              {p.type}
+            </Text>
+            <Text ta="center" fz="sm">
+              {waterIcon} Needs watering in 5 days
+            </Text>
+            <Text ta="center" fz="sm">
+              {humidityIcon} Needs misting in 3 days
+            </Text>
+          </Paper>
+        ))}
+      </div>
 
-    return (
-        <div className='flex flex-col justify-center'>
-            <div className="flex font-decorative text-lime-900 text-7xl justify-center">Green Space</div>
-            <div className='flex flex-col font-body max-w-screen-md m-auto justify-center' >
-                <div className="flex mx-6 mt-14 justify-center">
+      <Container className="rounded-lg my-5 p-2 font-body border border-gray-200">
+        <p className="font-semibold mb-2">Upcoming Tasks</p>
+        <p className="ml-3">{waterIcon} 2 plants need watering tomorrow</p>
+      </Container>
 
-                    <div className="bg-slate-50 rounded-lg grow m-4 p-6 pt-3">
-                        <div className='font-semibold' >Water needs</div>
-                        <div className="px-4 pt-1 leading-loose">
-                            {plants.map(p => (<div key={p._id}>{waterIcon} {p.type}</div>))}
-                        </div>
-                    </div>
-
-                    <div className="bg-slate-50 rounded-lg grow m-4 p-6 pt-3">
-                        <div className='font-semibold'>Humidity needs</div>
-                        <div className="px-4 pt-1 leading-loose">
-                            <div>{humidityIcon} Bonsai Tree</div>
-                            <div>{humidityIcon} Pin-Stripe Calethea</div>
-                            <div>{humidityIcon} Pepperomia Hope</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className='flex-col flex justify-between mx-6'>
-
-                    <div className="bg-slate-50 rounded-lg grow m-4 p-6 pt-3">
-                        <div className='font-semibold'>Reminders</div>
-                        <div className="px-4 pt-1 leading-loose">
-                            <div>{fertilizeIcon} 3 plants need fertiziling this month</div>
-                            <div>{sunlightIcon} 2 plants need rotated next water</div>
-                        </div>
-                    </div>
-                    <div className="bg-slate-50 rounded-lg grow m-4 p-6 pt-3">
-                        <div className='font-semibold'>Tomorrow</div>
-                        <div className="px-4 pt-1 leading-loose">
-                            <div>{waterIcon} 0 plants due for watering</div>
-                            <div>{humidityIcon} 5 plants due for misting</div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    )
+      <Container className="rounded-lg my-5 p-2 font-body border border-gray-200">
+        <p className="font-semibold mb-2">Reminders</p>
+        <p className="ml-3">{fertilizeIcon} 3 plants need fertiziling this month</p>
+      </Container>
+    </div>
+  );
 }

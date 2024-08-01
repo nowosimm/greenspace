@@ -14,6 +14,7 @@ import { Link, Outlet } from 'react-router-dom'
 
 import '@mantine/core/styles.css';
 import { MantineProvider } from '@mantine/core';
+import '@mantine/carousel/styles.css';
 
 const navigation = [
   { name: 'Home', href: '/', icon: HomeIcon, current: false },

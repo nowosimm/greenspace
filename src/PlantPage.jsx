@@ -25,6 +25,7 @@ export default function () {
         }
         callServer();
     }, []);
+    
     return (
         <div className=" font-body m-6">
             <div className="flex justify-center">
