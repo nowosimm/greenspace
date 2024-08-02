@@ -2,13 +2,15 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Calendar from './Calendar';
 import App from "./App.jsx";
-import AddPlant from "./AddPlant"
-import Plant from './PlantWorking';
-import WelcomePage from './welcomePage';
-import HomePage from './HomePage';
+
+import Calendar from './Calendar';
 import Gallery from './Gallery';
+import WelcomePage from './welcomePage';
+import Plant from './PlantPage';
+import HomePage from './HomePage';
+import AddPage from './AddPage';
+
 
 const router = createBrowserRouter([
   {
@@ -16,11 +18,11 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { path: "/calendar", element: <Calendar /> },
-      { path: "/addPlant", element: <AddPlant /> },
       { path: "/gallery", element: <Gallery /> },
       { path: "/welcomePage", element: <WelcomePage /> },
       { path: "/plant/:plantId", element: <Plant /> },
       { path: "/HomePage", element: <HomePage /> },
+      { path: "/addPage", element: <AddPage /> },
       { index: true, element: <HomePage /> },
     ]
   },
