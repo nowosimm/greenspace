@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import "@mantine/core/styles.css";
 import {
-  TextInput,
-  Code,
   UnstyledButton,
-  Badge,
   Text,
   Group,
   ActionIcon,
@@ -59,10 +56,12 @@ export default function () {
 
   return (
     <MantineProvider>
-      <div className="flex flex-row">
+      <div className="flex flex-row font-body">
         <nav className={classes.navbar}>
           <div className={classes.section}>
-            <UserButton />
+            <h1 className="font-decorative text-green-950 text-2xl tracking-wider p-4">
+              Greenspace
+            </h1>
           </div>
           <div className={classes.section}>
             <div className={classes.mainLinks}>{mainLinks}</div>
@@ -76,17 +75,23 @@ export default function () {
               <Text size="xs" fw={500} c="dimmed">
                 Your Plants
               </Text>
-              <Tooltip label="Add New Plant" withArrow position="right">
-                <ActionIcon variant="default" size={18}>
-                  <IconPlus
-                    style={{ width: rem(12), height: rem(12) }}
-                    stroke={1.5}
-                    href="/addPage"
-                  />
-                </ActionIcon>
-              </Tooltip>
+
+              <Link to="/AddPage">
+                <Tooltip label="Add New Plant" withArrow position="right">
+                  <ActionIcon variant="default" size={18}>
+                    <IconPlus
+                      style={{ width: rem(12), height: rem(12) }}
+                      stroke={1.5}
+                    />
+                  </ActionIcon>
+                </Tooltip>
+              </Link>
             </Group>
+
             <div className={classes.collections}>{collectionLinks}</div>
+          </div>
+          <div className={classes.section}>
+            <UserButton />
           </div>
         </nav>
 
