@@ -1,4 +1,4 @@
-import { Avatar, Text, Button, Paper } from "@mantine/core";
+import { Avatar, Text, Paper } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Container } from "@mantine/core";
 import plant from "./images/plant.jpeg";
@@ -16,7 +16,7 @@ const waterIcon = <FontAwesomeIcon icon={faDroplet} />;
 const humidityIcon = <FontAwesomeIcon icon={faSprayCanSparkles} />;
 const fertilizeIcon = <FontAwesomeIcon icon={faPlantWilt} />;
 
-export default function UserInfoAction() {
+export default function() {
   const [plants, setPlants] = useState([]);
   useEffect(() => {
     const callServer = async () => {
@@ -37,7 +37,7 @@ export default function UserInfoAction() {
             p="lg"
             bg="var(--mantine-color-body)"
           >
-            <Avatar src={plant} size={120} radius={120} mx="auto" />
+            <Avatar src={plant} size={120} radius={120} mx="auto" className="max-w-96"/>
             <Text ta="center" fz="lg" fw={500} mt="md">
               {p.type}
             </Text>

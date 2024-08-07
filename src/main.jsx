@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 import App from "./App.jsx";
 
 import Calendar from './Calendar';
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
       { path: "/plant/:plantId", element: <Plant /> },
       { path: "/HomePage", element: <HomePage /> },
       { path: "/addPage", element: <AddPage /> },
+
       { index: true, element: <HomePage /> },
     ]
   },

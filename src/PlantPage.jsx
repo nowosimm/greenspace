@@ -1,4 +1,3 @@
-import { useMediaQuery } from "@mantine/hooks";
 import { Carousel } from "@mantine/carousel";
 import {
   Text,
@@ -20,6 +19,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+
+import current from "./images/current.jpeg";
+import old from "./images/old.jpeg";
 
 const waterIcon = <FontAwesomeIcon icon={faDroplet} />;
 const humidityIcon = <FontAwesomeIcon icon={faSprayCanSparkles} />;
@@ -90,49 +92,51 @@ export default function () {
       console.log(response);
     };
     callServer();
-  }, []);
-
-  const theme = useMantineTheme();
-  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
-  const slides = data.map((item) => (
-    <Carousel.Slide key={item.title}>
-      <Cards {...item} />
-    </Carousel.Slide>
-  ));
+  }, [plantId]);
 
   return (
     <div className="font-body">
-      <Carousel
-        slideSize={{ base: "100%", sm: "50%" }}
-        slideGap={{ base: rem(1), sm: "xl" }}
-        align="start"
-        slidesToScroll={mobile ? 1 : 2}
-      >
-        {slides}
-      </Carousel>
-      <div>
-        <div className="font-decorative text-xl pb-4">{plant.type}</div>
+      <div className="grid grid-cols-2">
         <div>
-          <div className="m-3">
-            {sunlightIcon} I need {plant.sunlight} sunlight
+          <Carousel withIndicators>
+            <Carousel.Slide >
+              <img src={current}></img>
+            </Carousel.Slide>
+            <Carousel.Slide>
+              <img src={old}></img>
+            </Carousel.Slide>
+            <Carousel.Slide>
+              <img src={current}></img>
+            </Carousel.Slide>
+          </Carousel>
+        </div>
+
+        <div className="mx-8 grid grid-rows-2">
+          <div className="flex flex-col justify-around">
+            <div className="font-decorative text-2xl pb-4">{plant.type}</div>
+            <div className="m-3">
+              {sunlightIcon} I need {plant.sunlight} sunlight
+            </div>
+            <div className="m-3">
+              {waterIcon} I need watered when {plant.water} of my soil is dry
+            </div>
+            <div className="m-3">
+              {humidityIcon} I need {plant.humidity} humidity
+            </div>
           </div>
-          <div className="m-3">
-            {waterIcon} I need watered when {plant.water} of my soil is dry
-          </div>
-          <div className="m-3">
-            {humidityIcon} I need {plant.humidity} humidity
+          <div className=" object-fill	">
+            <JsonInput
+              label="Note Pad"
+              placeholder="Enter any notes here"
+              formatOnBlur
+              autosize
+              minRows={4}
+              // maxRows={10}
+            />
           </div>
         </div>
-        <JsonInput
-          label="Note Pad"
-          placeholder="Enter any notes here"
-          validationError="Invalid JSON"
-          formatOnBlur
-          autosize
-          minRows={4}
-          maxRows={4}
-        />
       </div>
+
       <div className="mt-4 flex justify-center">
         <Pill size="lg" className="m-2">
           {waterIcon} 6 days until next water

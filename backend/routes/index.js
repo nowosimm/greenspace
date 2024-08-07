@@ -29,7 +29,7 @@ router.post("/addPage", async (req, res, next) => {
     res.sendStatus(500);
   }
 });
-
+s
 router.get("/:plant", async (req, res, next) => {
   const plants = await Plant.findOne({ _id: req.params.plant })
     .populate("type")

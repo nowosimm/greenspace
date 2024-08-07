@@ -10,41 +10,41 @@ export default function () {
     <div className="font-body">
       <div className="font-semibold text-xl mb-10">Gallery</div>
       <ScrollArea h={650}>
-        <div class="grid grid-cols-3 gap-5 border-5 m-5">
+        <div className="grid grid-cols-3 gap-5 border-5 m-5">
           <img
-            class="w-full aspect-square rounded-md hover:opacity-35"
+            className="w-full aspect-square rounded-md hover:opacity-35"
             src={old}
           />
           <img
-            class="w-full aspect-square rounded-md hover:opacity-35"
+            className="w-full aspect-square rounded-md hover:opacity-35"
             src={current}
           />
           <img
-            class="w-full aspect-square rounded-md hover:opacity-35"
+            className="w-full aspect-square rounded-md hover:opacity-35"
             src={plant}
           />
           <img
-            class="w-full aspect-square rounded-md hover:opacity-35"
+            className="w-full aspect-square rounded-md hover:opacity-35"
             src={plant}
           />
           <img
-            class="w-full aspect-square rounded-md hover:opacity-35"
+            className="w-full aspect-square rounded-md hover:opacity-35"
             src={old}
           />
           <img
-            class="w-full aspect-square rounded-md hover:opacity-35"
+            className="w-full aspect-square rounded-md hover:opacity-35"
             src={current}
           />
                   <img
-            class="w-full aspect-square rounded-md hover:opacity-35"
+            className="w-full aspect-square rounded-md hover:opacity-35"
             src={plant}
           />
           <img
-            class="w-full aspect-square rounded-md hover:opacity-35"
+            className="w-full aspect-square rounded-md hover:opacity-35"
             src={old}
           />
           <img
-            class="w-full aspect-square rounded-md hover:opacity-35"
+            className="w-full aspect-square rounded-md hover:opacity-35"
             src={current}
           />
         </div>
