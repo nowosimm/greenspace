@@ -19,7 +19,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { IconSettings } from "@tabler/icons-react";
+import { IconPlus } from "@tabler/icons-react";
 
 import current from "./images/current.jpeg";
 import old from "./images/old.jpeg";
@@ -84,17 +84,33 @@ const data = [
 export default function () {
   let { plantId } = useParams();
   const [plant, setPlant] = useState({});
-  const [value, setValue] = useState();
+  const [noteValue, setNoteValue] = useState();
   useEffect(() => {
     const callServer = async () => {
       let response = await (
         await fetch("http://localhost:3000/" + plantId)
       ).json();
       setPlant(response);
+      setNoteValue(response.notes)
       console.log(response);
     };
     callServer();
   }, [plantId]);
+  
+  const submitForm = async () => {
+    let json = {
+      notes: noteValue,
+    };
+    let response = await fetch("http://localhost:3000/" + plantId, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(json),
+    });
+    console.log(response);
+    location.reload();
+  };
 
   return (
     <div className="font-body">
@@ -128,19 +144,30 @@ export default function () {
               {humidityIcon} I need {plant.humidity} humidity
             </div>
           </div>
-          <div className=" object-fill	">
-            <JsonInput
-              type="text"
-              label="Note Pad"
-              placeholder="Enter any notes here"
-              formatOnBlur
-              autosize
-              minRows={4}
-              value={value}
-              onChange={(e) => setData(e.target.value)}
-              // maxRows={10}
-            />
-          </div>
+          <form name="notes">
+            <div>
+              <JsonInput
+                type="text"
+                name="notes"
+                id="notes"
+                label="Note Pad"
+                placeholder="Enter any notes here"
+                formatOnBlur
+                autosize
+                minRows={4}
+                value={noteValue}
+                onChange={setNoteValue}
+                // maxRows={10}
+              />
+            </div>
+            <button
+              className="flex justify-center"
+              type="button"
+              onClick={submitForm}
+            >
+              <IconPlus />
+            </button>
+          </form>
         </div>
       </div>
 
