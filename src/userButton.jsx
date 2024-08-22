@@ -13,11 +13,11 @@ export function UserButton() {
 
         <div style={{ flex: 1 }}>
           <Text size="sm" fw={500}>
-            Welcome, Name
+            Welcome New User
           </Text>
 
           <Text c="dimmed" size="xs">
-            User email
+            Create Account
           </Text>
         </div>
 

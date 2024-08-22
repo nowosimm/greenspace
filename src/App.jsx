@@ -58,44 +58,51 @@ export default function () {
     <MantineProvider>
       <div className="flex flex-row font-body">
         <nav className={classes.navbar}>
-          <div className={classes.section}>
-            <h1 className="font-decorative text-green-950 text-2xl tracking-wider p-4">
-              Greenspace
-            </h1>
-          </div>
-          <div className={classes.section}>
-            <div className={classes.mainLinks}>{mainLinks}</div>
-          </div>
-
-          <div className={classes.section}>
-            <Group
-              className={classes.collectionsHeader}
-              justify="space-between"
-            >
-              <Text size="xs" fw={500} c="dimmed">
-                Your Plants
-              </Text>
-
-              <Link to="/AddPage">
-                <Tooltip label="Add New Plant" withArrow position="right">
-                  <ActionIcon variant="default" size={18}>
-                    <IconPlus
-                      style={{ width: rem(12), height: rem(12) }}
-                      stroke={1.5}
-                    />
-                  </ActionIcon>
-                </Tooltip>
+            <div className={classes.section}>
+              <Link to="/HomePage">
+                <h1 className="font-decorative text-forest text-2xl tracking-wider p-4">
+                  Greenspace
+                </h1>
               </Link>
-            </Group>
+            </div>
+            <div className={classes.section}>
+              <div className={classes.mainLinks}>{mainLinks}</div>
+            </div>
 
-            <div className={classes.collections}>{collectionLinks}</div>
-          </div>
-          <div className={classes.section}>
-            <UserButton />
-          </div>
+            <div className={classes.section}>
+              <Group
+                className={classes.collectionsHeader}
+                justify="space-between"
+              >
+                <Text size="xs" fw={500} c="dimmed">
+                  Your Plants
+                </Text>
+
+                <Link to="/AddPage">
+                  <Tooltip label="Add New Plant" withArrow position="right">
+                    <ActionIcon variant="default" size={18}>
+                      <IconPlus
+                        style={{ width: rem(12), height: rem(12) }}
+                        stroke={1.5}
+                      />
+                    </ActionIcon>
+                  </Tooltip>
+                </Link>
+              </Group>
+              <div className={classes.collections}>{collectionLinks}</div>
+            </div>
+            <div className="">
+            <Link to="/sign-up">
+              <div className={classes.section}>
+                <UserButton />
+              </div>
+            </Link>
+
+            </div>
+
         </nav>
 
-        <main className="lg:pl-72">
+        <main className="lg:pl-72 flex-1">
           <div>
             <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6 m-9">
               <Outlet />

@@ -9,7 +9,7 @@ export default function () {
   return (
     <div className="font-body">
       <div className="font-semibold text-xl mb-10">Gallery</div>
-      <ScrollArea h={650}>
+      <ScrollArea h={1200}>
         <div className="grid grid-cols-3 gap-5 border-5 m-5">
           <img
             className="w-full aspect-square rounded-md hover:opacity-35"

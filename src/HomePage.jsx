@@ -26,9 +26,9 @@ export default function() {
     callServer();
   }, []);
   return (
-    <div>
+    <div className="w-full">
         <h1 className="font-body font-bold mb-5">Tasks for 07.26</h1>     
-      <div className="grid grid-cols-2 gap-5 font-body">
+      <div className="grid grid-cols-3 gap-5 font-body">
         {plants.map((p) => (
           <Paper
             key={p._id}

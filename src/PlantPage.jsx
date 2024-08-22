@@ -19,6 +19,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { IconSettings } from "@tabler/icons-react";
 
 import current from "./images/current.jpeg";
 import old from "./images/old.jpeg";
@@ -83,6 +84,7 @@ const data = [
 export default function () {
   let { plantId } = useParams();
   const [plant, setPlant] = useState({});
+  const [value, setValue] = useState();
   useEffect(() => {
     const callServer = async () => {
       let response = await (
@@ -99,7 +101,7 @@ export default function () {
       <div className="grid grid-cols-2">
         <div>
           <Carousel withIndicators>
-            <Carousel.Slide >
+            <Carousel.Slide>
               <img src={current}></img>
             </Carousel.Slide>
             <Carousel.Slide>
@@ -113,7 +115,9 @@ export default function () {
 
         <div className="mx-8 grid grid-rows-2">
           <div className="flex flex-col justify-around">
-            <div className="font-decorative text-2xl pb-4">{plant.type}</div>
+            <div className="font-decorative text-2xl pb-4 text-coolBlack">
+              {plant.type}
+            </div>
             <div className="m-3">
               {sunlightIcon} I need {plant.sunlight} sunlight
             </div>
@@ -126,11 +130,14 @@ export default function () {
           </div>
           <div className=" object-fill	">
             <JsonInput
+              type="text"
               label="Note Pad"
               placeholder="Enter any notes here"
               formatOnBlur
               autosize
               minRows={4}
+              value={value}
+              onChange={(e) => setData(e.target.value)}
               // maxRows={10}
             />
           </div>

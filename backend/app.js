@@ -1,6 +1,9 @@
 require('dotenv').config()
 var createError = require('http-errors');
 var express = require('express');
+const session = require("express-session");
+const passport = require("passport");
+const LocalStrategy = require('passport-local').Strategy;
 var path = require('path');
 var cors = require('cors')
 var cookieParser = require('cookie-parser');
@@ -12,6 +15,7 @@ var usersRouter = require('./routes/users');
 var app = express();
 app.use(express.json());
 const mongoose = require("mongoose");
+const PlantUser = require('./models/plantUser');
 mongoose.set("strictQuery", false);
 const mongoDB = process.env.MONGO_URL;
 
@@ -31,6 +35,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({ secret: "cats", resave: false, saveUninitialized: false }));
+app.use(passport.session());
+app.use(express.urlencoded({ extended: false }));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -49,6 +56,36 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+passport.use(
+  new LocalStrategy(async (username, password, done) => {
+    try {
+      const user = await PlantUser.findOne({ username: username });
+      if (!user) {
+        return done(null, false, { message: "Incorrect username" });
+      };
+      if (user.password !== password) {
+        return done(null, false, { message: "Incorrect password" });
+      };
+      return done(null, user);
+    } catch(err) {
+      return done(err);
+    };
+  })
+);
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await BlogUser.findById(id);
+    done(null, user);
+  } catch(err) {
+    done(err);
+  };
 });
 
 module.exports = app;

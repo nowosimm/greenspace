@@ -7,7 +7,7 @@ import App from "./App.jsx";
 
 import Calendar from './Calendar';
 import Gallery from './Gallery';
-import WelcomePage from './welcomePage';
+import SignUp from './sign-up-form';
 import Plant from './PlantPage';
 import HomePage from './HomePage';
 import AddPage from './AddPage';
@@ -20,7 +20,7 @@ const router = createBrowserRouter([
     children: [
       { path: "/calendar", element: <Calendar /> },
       { path: "/gallery", element: <Gallery /> },
-      { path: "/welcomePage", element: <WelcomePage /> },
+      { path: "/sign-up", element: <SignUp /> },
       { path: "/plant/:plantId", element: <Plant /> },
       { path: "/HomePage", element: <HomePage /> },
       { path: "/addPage", element: <AddPage /> },
