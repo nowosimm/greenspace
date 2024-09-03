@@ -21,6 +21,7 @@ const PlantSchema = new Schema({
         enum: ["Extreme", "High", "Moderate", "Low"],
         default: "Extreme",
     },
+    picturePath: {type: String, required: false},
     notes: {type: String, required: false, maxLength: 1500},
 })
 

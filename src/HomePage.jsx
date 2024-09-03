@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Container } from "@mantine/core";
 import plant from "./images/plant.jpeg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link, Outlet } from "react-router-dom";
 import {
   faSun,
   faDroplet,
@@ -16,7 +17,7 @@ const waterIcon = <FontAwesomeIcon icon={faDroplet} />;
 const humidityIcon = <FontAwesomeIcon icon={faSprayCanSparkles} />;
 const fertilizeIcon = <FontAwesomeIcon icon={faPlantWilt} />;
 
-export default function() {
+export default function () {
   const [plants, setPlants] = useState([]);
   useEffect(() => {
     const callServer = async () => {
@@ -27,27 +28,37 @@ export default function() {
   }, []);
   return (
     <div className="w-full">
-        <h1 className="font-body font-bold mb-5">Tasks for 07.26</h1>     
+      <h1 className="font-body font-bold mb-5">Tasks for 07.26</h1>
       <div className="grid grid-cols-3 gap-5 font-body">
         {plants.map((p) => (
-          <Paper
-            key={p._id}
-            radius="md"
-            withBorder
-            p="lg"
-            bg="var(--mantine-color-body)"
-          >
-            <Avatar src={plant} size={120} radius={120} mx="auto" className="max-w-96"/>
-            <Text ta="center" fz="lg" fw={500} mt="md">
-              {p.type}
-            </Text>
-            <Text ta="center" fz="sm">
-              {waterIcon} Needs watering in 5 days
-            </Text>
-            <Text ta="center" fz="sm">
-              {humidityIcon} Needs misting in 3 days
-            </Text>
-          </Paper>
+          <Link to={`/plant/${p._id}`}>
+            <Paper
+              key={p._id}
+              radius="md"
+              withBorder
+              p="lg"
+              bg="var(--mantine-color-body)"
+            >
+              <Avatar
+                src={plant}
+                size={120}
+                radius={120}
+                mx="auto"
+                className="max-w-96"
+              />
+              <div>
+                <Text ta="center" fz="lg" fw={500} mt="md">
+                  {p.type}
+                </Text>
+                <Text ta="center" fz="sm">
+                  {waterIcon} Needs watering in 5 days
+                </Text>
+                <Text ta="center" fz="sm">
+                  {humidityIcon} Needs misting in 3 days
+                </Text>
+              </div>
+            </Paper>
+          </Link>
         ))}
       </div>
 
@@ -58,7 +69,9 @@ export default function() {
 
       <Container className="rounded-lg my-5 p-2 font-body border border-gray-200">
         <p className="font-semibold mb-2">Reminders</p>
-        <p className="ml-3">{fertilizeIcon} 3 plants need fertiziling this month</p>
+        <p className="ml-3">
+          {fertilizeIcon} 3 plants need fertiziling this month
+        </p>
       </Container>
     </div>
   );

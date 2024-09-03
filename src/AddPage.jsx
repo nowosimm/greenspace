@@ -1,5 +1,7 @@
-import { Input, Radio, Group } from "@mantine/core";
-import { useState } from "react";
+import { Input, Radio, Group, Text, rem } from "@mantine/core";
+import { useState, useRef } from "react";
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { IconUpload, IconPhoto, IconX } from '@tabler/icons-react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSun,
@@ -16,23 +18,37 @@ export default function () {
   const [sunlightMem, setSunlightMem] = useState();
   const [waterMem, setWaterMem] = useState();
   const [humidityMem, setHumidityMem] = useState();
+  const [files, setFiles] = useState([]);
+  const openRef = useRef(null);
 
   const submitForm = async () => {
-    let json = {
-      type: plantType,
-      water: waterMem,
-      humidity: humidityMem,
-      sunlight: sunlightMem,
-    };
+    // let json = {
+    //   type: plantType,
+    //   water: waterMem,
+    //   humidity: humidityMem,
+    //   sunlight: sunlightMem,
+    // };
+    let formData = new FormData();
+    formData.append('type', plantType);
+    formData.append('water', waterMem);
+    formData.append('humidity', humidityMem);
+    formData.append('sunlight', sunlightMem);
+    if(files.length == 1) {
+      formData.append('picture', files[0], files[0].name)
+    }
+    // formData.append('file', files);
+    console.log(formData)
+
     let response = await fetch("http://localhost:3000/addPage", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(json),
+      // headers: {
+      //   "Content-Type": "application/json",
+      // },
+      // body: JSON.stringify(json),
+      body: formData
     });
     console.log(response);
-    location.reload();
+    // location.reload();
   };
   return (
     <form name="form1">
@@ -105,6 +121,65 @@ export default function () {
               </Group>
             </Radio.Group>
           </div>
+
+          <Dropzone
+            onDrop={(acceptedFiles) => {
+              console.log("accepted files", acceptedFiles);
+              setFiles(acceptedFiles);
+            }}
+            onReject={(files) => console.log("rejected files", files)}
+            maxSize={5 * 1024 ** 2}
+            accept={IMAGE_MIME_TYPE}
+            name="picture"
+            // {...props}
+          >
+            <Group
+              justify="center"
+              gap="xl"
+              mih={220}
+              style={{ pointerEvents: "none" }}
+            >
+              <Dropzone.Accept>
+                <IconUpload
+                  style={{
+                    width: rem(52),
+                    height: rem(52),
+                    color: "var(--mantine-color-blue-6)",
+                  }}
+                  stroke={1.5}
+                />
+              </Dropzone.Accept>
+              <Dropzone.Reject>
+                <IconX
+                  style={{
+                    width: rem(52),
+                    height: rem(52),
+                    color: "var(--mantine-color-red-6)",
+                  }}
+                  stroke={1.5}
+                />
+              </Dropzone.Reject>
+              <Dropzone.Idle>
+                <IconPhoto
+                  style={{
+                    width: rem(52),
+                    height: rem(52),
+                    color: "var(--mantine-color-dimmed)",
+                  }}
+                  stroke={1.5}
+                />
+              </Dropzone.Idle>
+
+              <div>
+                <Text size="xl" inline>
+                  Upload Images Here
+                </Text>
+                <Text size="sm" c="dimmed" inline mt={7}>
+                  Attach as many images as you like
+                </Text>
+              </div>
+            </Group>
+          </Dropzone>
         </div>
       </div>
       <button

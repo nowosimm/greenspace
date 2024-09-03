@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import "@mantine/core/styles.css";
+import '@mantine/carousel/styles.css';
+import '@mantine/dropzone/styles.css';
 import {
   UnstyledButton,
   Text,

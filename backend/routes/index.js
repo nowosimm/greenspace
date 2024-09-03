@@ -62,6 +62,7 @@ router.get("/home", async function (req, res, next) {
 
 router.post("/addPage", async (req, res, next) => {
   console.log(req.body);
+  console.log(req.files);
   try {
     const plant = new Plant({
       type: req.body.type,
@@ -69,6 +70,21 @@ router.post("/addPage", async (req, res, next) => {
       humidity: req.body.humidity,
       sunlight: req.body.sunlight,
     });
+    if (req.files || Object.keys(req.files).length != 0) {
+      let picture;
+      let uploadPath;
+      // The name of the input field (i.e. "picture") is used to retrieve the uploaded file
+      picture = req.files.picture;
+      uploadPath = __dirname + "/../plant-pictures/" + picture.name;
+      plant.picturePath = uploadPath;
+
+      // Use the mv() method to place the file somewhere on your server
+      picture.mv(uploadPath, function (err) {
+        if (err) {
+          return res.status(500).send(err);
+        }
+      });
+    }
     await plant.save();
     res.json(plant);
   } catch (e) {
@@ -76,7 +92,6 @@ router.post("/addPage", async (req, res, next) => {
     res.sendStatus(500);
   }
 });
-
 
 router.get("/:plant", async (req, res, next) => {
   const plants = await Plant.findOne({ _id: req.params.plant })

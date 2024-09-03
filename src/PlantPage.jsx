@@ -1,87 +1,27 @@
 import { Carousel } from "@mantine/carousel";
-import {
-  Text,
-  Paper,
-  rem,
-  Pill,
-  useMantineTheme,
-  JsonInput,
-} from "@mantine/core";
+import { Text, Paper, Pill, JsonInput, Tabs, rem, Switch } from "@mantine/core";
 import classes from "../css/CardsCarousel.module.css";
 import "@mantine/carousel/styles.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faDroplet,
-  faSprayCanSparkles,
-  faPlantWilt,
-  faSeedling,
-  faSun,
-} from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { IconPlus } from "@tabler/icons-react";
+import {
+  IconPlus,
+  IconList,
+  IconInfoCircle,
+  IconNotes,
+  IconPhoto,
+  IconBrightness2,
+  IconDroplet,
+  IconSpray,
+  IconLeaf,
+  IconShovelPitchforks,
+} from "@tabler/icons-react";
 
 import current from "./images/current.jpeg";
 import old from "./images/old.jpeg";
 
-const waterIcon = <FontAwesomeIcon icon={faDroplet} />;
-const humidityIcon = <FontAwesomeIcon icon={faSprayCanSparkles} />;
-const fertilizeIcon = <FontAwesomeIcon icon={faPlantWilt} />;
-const repottingIcon = <FontAwesomeIcon icon={faSeedling} />;
-const sunlightIcon = <FontAwesomeIcon icon={faSun} />;
-
-function Cards({ image, category }) {
-  return (
-    <Paper
-      shadow="md"
-      p="xl"
-      radius="md"
-      style={{ backgroundImage: `url(${image})` }}
-      className={classes.card}
-    >
-      <div>
-        <Text className={classes.category} size="xs">
-          {category}
-        </Text>
-      </div>
-    </Paper>
-  );
-}
-
-const data = [
-  {
-    image:
-      "https://images.unsplash.com/photo-1508193638397-1c4234db14d8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80",
-    category: "04.11.21",
-  },
-  {
-    image:
-      "https://images.unsplash.com/photo-1559494007-9f5847c49d94?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80",
-    category: "12.10.23",
-  },
-  {
-    image:
-      "https://images.unsplash.com/photo-1608481337062-4093bf3ed404?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80",
-    category: "03.11.19",
-  },
-  {
-    image:
-      "https://images.unsplash.com/photo-1507272931001-fc06c17e4f43?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80",
-    category: "09.28.20",
-  },
-  {
-    image:
-      "https://images.unsplash.com/photo-1510798831971-661eb04b3739?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80",
-    category: "01-12-24",
-  },
-  {
-    image:
-      "https://images.unsplash.com/photo-1582721478779-0ae163c05a60?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80",
-    category: "10-18-24",
-  },
-];
-
 export default function () {
+  const iconStyle = { width: rem(12), height: rem(12) };
   let { plantId } = useParams();
   const [plant, setPlant] = useState({});
   const [noteValue, setNoteValue] = useState();
@@ -91,12 +31,53 @@ export default function () {
         await fetch("http://localhost:3000/" + plantId)
       ).json();
       setPlant(response);
-      setNoteValue(response.notes)
+      setNoteValue(response.notes);
       console.log(response);
     };
     callServer();
   }, [plantId]);
-  
+
+  const careInfo = [
+    {
+      icon: IconBrightness2,
+      value: "I need " + plant.sunlight + " sunlight",
+    },
+    {
+      icon: IconDroplet,
+      value: "I need watered when " + plant.water + " of my soil is dry",
+    },
+    {
+      icon: IconSpray,
+      value: "I need " + plant.humidity + " humidity",
+    },
+  ];
+
+  const taskInfo = [
+    {
+      icon: IconLeaf,
+      value: "Fertilized 23 days ago",
+    },
+    {
+      icon: IconSpray,
+      value: "5 days until next misting",
+    },
+    {
+      icon: IconShovelPitchforks,
+      value: "Re-potted 3 month ago",
+    },
+  ];
+
+  const todayInfo = [
+    {
+      icon: IconSpray,
+      value: "Plant needs misting",
+    },
+    {
+      icon: IconDroplet,
+      value: "Plant needs watering",
+    },
+  ];
+
   const submitForm = async () => {
     let json = {
       notes: noteValue,
@@ -112,11 +93,17 @@ export default function () {
     location.reload();
   };
 
+
   return (
-    <div className="font-body">
+    <div className="font-body text-base	">
       <div className="grid grid-cols-2">
         <div>
           <Carousel withIndicators>
+            {plant.picturePath && (
+              <Carousel.Slide>
+                <img src={`file:/${plant.picturePath}`}></img>
+              </Carousel.Slide>
+            )}
             <Carousel.Slide>
               <img src={current}></img>
             </Carousel.Slide>
@@ -129,61 +116,94 @@ export default function () {
           </Carousel>
         </div>
 
-        <div className="mx-8 grid grid-rows-2">
-          <div className="flex flex-col justify-around">
-            <div className="font-decorative text-2xl pb-4 text-coolBlack">
-              {plant.type}
-            </div>
-            <div className="m-3">
-              {sunlightIcon} I need {plant.sunlight} sunlight
-            </div>
-            <div className="m-3">
-              {waterIcon} I need watered when {plant.water} of my soil is dry
-            </div>
-            <div className="m-3">
-              {humidityIcon} I need {plant.humidity} humidity
-            </div>
+        <div className="mx-5">
+          <div className="font-decorative text-3xl pb-4 mb-2 text-coolBlack">
+            {plant.type}
           </div>
-          <form name="notes">
-            <div>
-              <JsonInput
-                type="text"
-                name="notes"
-                id="notes"
-                label="Note Pad"
-                placeholder="Enter any notes here"
-                formatOnBlur
-                autosize
-                minRows={4}
-                value={noteValue}
-                onChange={setNoteValue}
-                // maxRows={10}
-              />
-            </div>
-            <button
-              className="flex justify-center"
-              type="button"
-              onClick={submitForm}
-            >
-              <IconPlus />
-            </button>
-          </form>
-        </div>
-      </div>
+          <Tabs color="rgba(119, 140, 130, 1)" defaultValue="gallery">
+            <Tabs.List grow justify="center">
+              <Tabs.Tab
+                value="tasks"
+                leftSection={<IconList style={iconStyle} />}
+              >
+                Tasks
+              </Tabs.Tab>
+              <Tabs.Tab
+                value="care"
+                leftSection={<IconInfoCircle style={iconStyle} />}
+              >
+                Care Info
+              </Tabs.Tab>
 
-      <div className="mt-4 flex justify-center">
-        <Pill size="lg" className="m-2">
-          {waterIcon} 6 days until next water
-        </Pill>
-        <Pill size="lg" className="m-2">
-          {humidityIcon} 5 days until next misting
-        </Pill>
-        <Pill size="lg" className="m-2">
-          {fertilizeIcon} fertilized 23 days ago
-        </Pill>
-        <Pill size="lg" className="m-2">
-          {repottingIcon} Re-potted 67 days ago
-        </Pill>
+              <Tabs.Tab
+                value="upload"
+                leftSection={<IconPhoto style={iconStyle} />}
+              >
+                Image Upload
+              </Tabs.Tab>
+            </Tabs.List>
+
+            <Tabs.Panel value="tasks">
+            <div className="flex flex-col p-2 bg-slate-50 rounded-md m-5">
+                <h2>Today</h2>
+                {todayInfo.map((p) => (
+                  <Switch
+                  // defaultChecked
+                  className="flex p-2"
+                  label={p.value}
+                />
+                ))}
+              </div>
+              <div className="flex flex-col p-2 bg-slate-50 rounded-md m-5">
+                <h2>Upcoming</h2>
+                {taskInfo.map((p) => (
+                  <div className="flex p-2 text-base">
+                    <p.icon className="mr-2"></p.icon>
+                    <div>{p.value}</div>
+                  </div>
+                ))}
+              </div>
+            </Tabs.Panel>
+
+            <Tabs.Panel value="care">
+              <div className="m-5 p-2">
+                {careInfo.map((p) => (
+                  <div className="flex p-2 bg-slate-50 rounded-md my-5 mt-0">
+                    <p.icon className="mr-2"></p.icon>
+                    <div>{p.value}</div>
+                  </div>
+                ))}
+                <form name="notes" className="flex flex-col">
+                  <div>
+                    <JsonInput
+                      type="text"
+                      name="notes"
+                      id="notes"
+                      label="Note Pad"
+                      placeholder="Enter any notes here"
+                      formatOnBlur
+                      autosize
+                      minRows={4}
+                      value={noteValue}
+                      onChange={setNoteValue}
+                      maxRows={10}
+                    />
+                  </div>
+                  <button
+                    className="flex justify-end text-sm hover:cursor-pointer p-2 items-center"
+                    type="button"
+                    onClick={submitForm}
+                  >
+                    <div className="pr-1">Save</div>
+                    <IconPlus />
+                  </button>
+                </form>
+              </div>
+            </Tabs.Panel>
+
+            <Tabs.Panel value="upload">upload image tab</Tabs.Panel>
+          </Tabs>
+        </div>
       </div>
     </div>
   );
