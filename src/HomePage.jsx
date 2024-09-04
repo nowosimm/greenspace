@@ -62,17 +62,22 @@ export default function () {
         ))}
       </div>
 
+      <Link to="/calendar">
       <Container className="rounded-lg my-5 p-2 font-body border border-gray-200">
         <p className="font-semibold mb-2">Upcoming Tasks</p>
         <p className="ml-3">{waterIcon} 2 plants need watering tomorrow</p>
       </Container>
+      </Link>
 
+      <Link to="/calendar">
       <Container className="rounded-lg my-5 p-2 font-body border border-gray-200">
         <p className="font-semibold mb-2">Reminders</p>
         <p className="ml-3">
           {fertilizeIcon} 3 plants need fertiziling this month
         </p>
       </Container>
+      </Link>
+
     </div>
   );
 }

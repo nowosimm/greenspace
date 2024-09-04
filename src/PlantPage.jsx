@@ -93,7 +93,6 @@ export default function () {
     location.reload();
   };
 
-
   return (
     <div className="font-body text-base	">
       <div className="grid grid-cols-2">
@@ -101,7 +100,7 @@ export default function () {
           <Carousel withIndicators>
             {plant.picturePath && (
               <Carousel.Slide>
-                <img src={`file:/${plant.picturePath}`}></img>
+                <img src={`http://localhost:3000/plant/${plant._id}/picture/${plant.picturePath}`}></img>
               </Carousel.Slide>
             )}
             <Carousel.Slide>
@@ -120,7 +119,7 @@ export default function () {
           <div className="font-decorative text-3xl pb-4 mb-2 text-coolBlack">
             {plant.type}
           </div>
-          <Tabs color="rgba(119, 140, 130, 1)" defaultValue="gallery">
+          <Tabs color="rgba(119, 140, 130, 1)" defaultValue="tasks">
             <Tabs.List grow justify="center">
               <Tabs.Tab
                 value="tasks"
@@ -144,24 +143,30 @@ export default function () {
             </Tabs.List>
 
             <Tabs.Panel value="tasks">
-            <div className="flex flex-col p-2 bg-slate-50 rounded-md m-5">
-                <h2>Today</h2>
-                {todayInfo.map((p) => (
-                  <Switch
-                  // defaultChecked
-                  className="flex p-2"
-                  label={p.value}
-                />
-                ))}
+              <div className="m-5">
+                <h2 className="mb-2">Today</h2>
+                <div className="flex flex-col p-2 bg-slate-50 rounded-md">
+                  {todayInfo.map((p) => (
+                    <Switch
+                      // defaultChecked
+                      color="rgba(83, 107, 76, 1)"
+                      className="flex p-2"
+                      label={p.value}
+                    />
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-col p-2 bg-slate-50 rounded-md m-5">
-                <h2>Upcoming</h2>
+
+              <div className="m-5">
+              <h2 className="mb-2">Upcoming</h2>
+              <div className="flex flex-col p-2 bg-slate-50 rounded-md">
                 {taskInfo.map((p) => (
                   <div className="flex p-2 text-base">
                     <p.icon className="mr-2"></p.icon>
                     <div>{p.value}</div>
                   </div>
                 ))}
+              </div>
               </div>
             </Tabs.Panel>
 

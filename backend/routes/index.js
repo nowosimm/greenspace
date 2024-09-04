@@ -1,3 +1,4 @@
+var path = require('path');
 var express = require("express");
 var router = express.Router();
 const passport = require("passport");
@@ -60,6 +61,16 @@ router.get("/home", async function (req, res, next) {
   res.json(plants);
 });
 
+router.get("/plant/:plantId/picture/:fileName", (req, res, next) => {
+  const picturePath = __dirname + "/../plant-pictures/" + req.params.fileName;
+
+  res.sendFile(path.resolve(picturePath), (err) => {
+    console.error(err);
+    res.send(err)
+    res.statusCode(500)
+  });
+})
+
 router.post("/addPage", async (req, res, next) => {
   console.log(req.body);
   console.log(req.files);
@@ -76,7 +87,7 @@ router.post("/addPage", async (req, res, next) => {
       // The name of the input field (i.e. "picture") is used to retrieve the uploaded file
       picture = req.files.picture;
       uploadPath = __dirname + "/../plant-pictures/" + picture.name;
-      plant.picturePath = uploadPath;
+      plant.picturePath = picture.name;
 
       // Use the mv() method to place the file somewhere on your server
       picture.mv(uploadPath, function (err) {
