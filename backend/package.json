@@ -8,6 +8,7 @@
   "dependencies": {
     "@mantine/carousel": "^7.11.2",
     "@mantine/dropzone": "^7.11.2",
+    "connect-mongodb-session": "^5.0.0",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
     "debug": "~2.6.9",

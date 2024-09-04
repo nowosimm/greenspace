@@ -1,4 +1,4 @@
-var path = require('path');
+var path = require("path");
 var express = require("express");
 var router = express.Router();
 const passport = require("passport");
@@ -38,7 +38,7 @@ router.post("/log-in", async (req, res, next) => {
       }
 
       req.login(user, { session: true }, () => {
-        res.sendStatus(200);
+        res.send({ _id: user._id, username: user.username });
       });
       console.log("here");
     } catch (error) {
@@ -56,20 +56,29 @@ router.get("/log-out", (req, res, next) => {
   });
 });
 
-router.get("/home", async function (req, res, next) {
-  const plants = await Plant.find().exec();
-  res.json(plants);
-});
+router.get(
+  "/me",
+  async function (req, res, next) {
+    res.json(req.user);
+  }
+);
+
+router.get(
+  "/home",
+  async function (req, res, next) {
+    const plants = await Plant.find().exec();
+    res.json(plants);
+  }
+);
 
 router.get("/plant/:plantId/picture/:fileName", (req, res, next) => {
   const picturePath = __dirname + "/../plant-pictures/" + req.params.fileName;
 
   res.sendFile(path.resolve(picturePath), (err) => {
     console.error(err);
-    res.send(err)
-    res.statusCode(500)
+    res.status(500).send(err);
   });
-})
+});
 
 router.post("/addPage", async (req, res, next) => {
   console.log(req.body);

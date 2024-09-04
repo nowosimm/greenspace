@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "@mantine/core/styles.css";
-import '@mantine/carousel/styles.css';
-import '@mantine/dropzone/styles.css';
+import "@mantine/carousel/styles.css";
+import "@mantine/dropzone/styles.css";
 import {
   UnstyledButton,
   Text,
@@ -33,7 +33,11 @@ export default function () {
   const [plants, setPlants] = useState([]);
   useEffect(() => {
     const callServer = async () => {
-      let response = await (await fetch("http://localhost:3000/")).json();
+      let response = await (
+        await fetch("http://localhost:3000/", {
+          credentials: "include",
+        })
+      ).json();
       setPlants(response);
     };
     callServer();
@@ -60,48 +64,46 @@ export default function () {
     <MantineProvider>
       <div className="flex flex-row font-body">
         <nav className={classes.navbar}>
-            <div className={classes.section}>
-              <Link to="/HomePage">
-                <h1 className="font-decorative text-forest text-2xl tracking-wider p-4">
-                  Greenspace
-                </h1>
+          <div className={classes.section}>
+            <Link to="/HomePage">
+              <h1 className="font-decorative text-forest text-2xl tracking-wider p-4">
+                Greenspace
+              </h1>
+            </Link>
+          </div>
+          <div className={classes.section}>
+            <div className={classes.mainLinks}>{mainLinks}</div>
+          </div>
+
+          <div className={classes.section}>
+            <Group
+              className={classes.collectionsHeader}
+              justify="space-between"
+            >
+              <Text size="xs" fw={500} c="dimmed">
+                Your Plants
+              </Text>
+
+              <Link to="/AddPage">
+                <Tooltip label="Add New Plant" withArrow position="right">
+                  <ActionIcon variant="default" size={18}>
+                    <IconPlus
+                      style={{ width: rem(12), height: rem(12) }}
+                      stroke={1.5}
+                    />
+                  </ActionIcon>
+                </Tooltip>
               </Link>
-            </div>
-            <div className={classes.section}>
-              <div className={classes.mainLinks}>{mainLinks}</div>
-            </div>
-
-            <div className={classes.section}>
-              <Group
-                className={classes.collectionsHeader}
-                justify="space-between"
-              >
-                <Text size="xs" fw={500} c="dimmed">
-                  Your Plants
-                </Text>
-
-                <Link to="/AddPage">
-                  <Tooltip label="Add New Plant" withArrow position="right">
-                    <ActionIcon variant="default" size={18}>
-                      <IconPlus
-                        style={{ width: rem(12), height: rem(12) }}
-                        stroke={1.5}
-                      />
-                    </ActionIcon>
-                  </Tooltip>
-                </Link>
-              </Group>
-              <div className={classes.collections}>{collectionLinks}</div>
-            </div>
-            <div className="">
+            </Group>
+            <div className={classes.collections}>{collectionLinks}</div>
+          </div>
+          <div className="">
             <Link to="/sign-up">
               <div className={classes.section}>
                 <UserButton />
               </div>
             </Link>
-
-            </div>
-
+          </div>
         </nav>
 
         <main className="lg:pl-72 flex-1">
