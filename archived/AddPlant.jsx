@@ -50,6 +50,7 @@ export default function Example() {
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: "include",
             body: JSON.stringify(json)
         });
         console.log(response)

@@ -1,6 +1,6 @@
 import { Carousel } from "@mantine/carousel";
-import { Text, Paper, Pill, JsonInput, Tabs, rem, Switch } from "@mantine/core";
-import classes from "../css/CardsCarousel.module.css";
+import { JsonInput, Tabs, rem, Switch, Group, Text } from "@mantine/core";
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import "@mantine/carousel/styles.css";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -8,13 +8,14 @@ import {
   IconPlus,
   IconList,
   IconInfoCircle,
-  IconNotes,
   IconPhoto,
   IconBrightness2,
   IconDroplet,
   IconSpray,
   IconLeaf,
   IconShovelPitchforks,
+  IconUpload,
+  IconX,
 } from "@tabler/icons-react";
 
 import current from "./images/current.jpeg";
@@ -28,7 +29,9 @@ export default function () {
   useEffect(() => {
     const callServer = async () => {
       let response = await (
-        await fetch("http://localhost:3000/" + plantId)
+        await fetch("http://localhost:3000/" + plantId, {
+          credentials: "include",
+        })
       ).json();
       setPlant(response);
       setNoteValue(response.notes);
@@ -87,6 +90,7 @@ export default function () {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify(json),
     });
     console.log(response);
@@ -100,7 +104,9 @@ export default function () {
           <Carousel withIndicators>
             {plant.picturePath && (
               <Carousel.Slide>
-                <img src={`http://localhost:3000/plant/${plant._id}/picture/${plant.picturePath}`}></img>
+                <img
+                  src={`http://localhost:3000/plant/${plant._id}/picture/${plant.picturePath}`}
+                ></img>
               </Carousel.Slide>
             )}
             <Carousel.Slide>
@@ -119,7 +125,7 @@ export default function () {
           <div className="font-decorative text-3xl pb-4 mb-2 text-coolBlack">
             {plant.type}
           </div>
-          <Tabs color="rgba(119, 140, 130, 1)" defaultValue="tasks">
+          <Tabs color="rgba(119, 140, 130, 1)" defaultValue="upload">
             <Tabs.List grow justify="center">
               <Tabs.Tab
                 value="tasks"
@@ -158,15 +164,15 @@ export default function () {
               </div>
 
               <div className="m-5">
-              <h2 className="mb-2">Upcoming</h2>
-              <div className="flex flex-col p-2 bg-slate-50 rounded-md">
-                {taskInfo.map((p) => (
-                  <div className="flex p-2 text-base">
-                    <p.icon className="mr-2"></p.icon>
-                    <div>{p.value}</div>
-                  </div>
-                ))}
-              </div>
+                <h2 className="mb-2">Upcoming</h2>
+                <div className="flex flex-col p-2 bg-slate-50 rounded-md">
+                  {taskInfo.map((p) => (
+                    <div className="flex p-2 text-base">
+                      <p.icon className="mr-2"></p.icon>
+                      <div>{p.value}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </Tabs.Panel>
 
@@ -206,7 +212,68 @@ export default function () {
               </div>
             </Tabs.Panel>
 
-            <Tabs.Panel value="upload">upload image tab</Tabs.Panel>
+            <Tabs.Panel value="upload">
+              <div className="px-3 py-6">
+                <Dropzone
+                  onDrop={(acceptedFiles) => {
+                    console.log("accepted files", acceptedFiles);
+                    setFiles(acceptedFiles);
+                  }}
+                  onReject={(files) => console.log("rejected files", files)}
+                  maxSize={5 * 1024 ** 2}
+                  accept={IMAGE_MIME_TYPE}
+                  name="picture"
+                  // {...props}
+                >
+                  <Group
+                    justify="center"
+                    gap="xl"
+                    mih={220}
+                    style={{ pointerEvents: "none" }}
+                  >
+                    <Dropzone.Accept>
+                      <IconUpload
+                        style={{
+                          width: rem(52),
+                          height: rem(52),
+                          color: "var(--mantine-color-blue-6)",
+                        }}
+                        stroke={1.5}
+                      />
+                    </Dropzone.Accept>
+                    <Dropzone.Reject>
+                      <IconX
+                        style={{
+                          width: rem(52),
+                          height: rem(52),
+                          color: "var(--mantine-color-red-6)",
+                        }}
+                        stroke={1.5}
+                      />
+                    </Dropzone.Reject>
+                    <Dropzone.Idle>
+                      <IconPhoto
+                        style={{
+                          width: rem(52),
+                          height: rem(52),
+                          color: "var(--mantine-color-dimmed)",
+                        }}
+                        stroke={1.5}
+                      />
+                    </Dropzone.Idle>
+
+                    <div>
+                      <Text size="xl" inline>
+                        Upload Images Here
+                      </Text>
+                      <Text size="sm" c="dimmed" inline mt={7}>
+                        Attach as many images as you like
+                      </Text>
+                    </div>
+                  </Group>
+                </Dropzone>
+              </div>
+            </Tabs.Panel>
           </Tabs>
         </div>
       </div>

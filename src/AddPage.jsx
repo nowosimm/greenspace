@@ -45,7 +45,8 @@ export default function () {
       //   "Content-Type": "application/json",
       // },
       // body: JSON.stringify(json),
-      body: formData
+      body: formData,
+      credentials: "include",
     });
     console.log(response);
     // location.reload();

@@ -10,6 +10,9 @@ router.get("/", async function (req, res, next) {
   const plants = await Plant.find().exec();
   res.json(plants);
 });
+router.get("/favicon.ico", async function (req, res, next) {
+  res.sendStatus(404);
+});
 
 router.post("/sign-up", async (req, res, next) => {
   try {

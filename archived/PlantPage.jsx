@@ -19,7 +19,9 @@ export default function () {
     const [plant, setPlant] = useState({});
     useEffect(() => {
         const callServer = async () => {
-            let response = await (await fetch("http://localhost:3000/"+plantId)).json();
+            let response = await (await fetch("http://localhost:3000/"+plantId, {
+                credentials: "include",
+              })).json();
             setPlant(response);
             console.log(response);
         }
