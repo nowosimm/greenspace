@@ -125,7 +125,7 @@ export default function () {
           <div className="font-decorative text-3xl pb-4 mb-2 text-coolBlack">
             {plant.type}
           </div>
-          <Tabs color="rgba(119, 140, 130, 1)" defaultValue="upload">
+          <Tabs color="rgba(119, 140, 130, 1)" defaultValue="tasks">
             <Tabs.List grow justify="center">
               <Tabs.Tab
                 value="tasks"

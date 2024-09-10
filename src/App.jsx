@@ -31,6 +31,7 @@ const links = [
 
 export default function () {
   const [plants, setPlants] = useState([]);
+  const [user, setUser] = useState({});
   useEffect(() => {
     const callServer = async () => {
       let response = await (
@@ -100,7 +101,7 @@ export default function () {
           <div className="">
             <Link to="/sign-up">
               <div className={classes.section}>
-                <UserButton />
+                <UserButton user={user} />
               </div>
             </Link>
           </div>
@@ -109,7 +110,7 @@ export default function () {
         <main className="lg:pl-72 flex-1">
           <div>
             <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6 m-9">
-              <Outlet />
+              <Outlet context={[user, setUser]} />
             </div>
           </div>
         </main>

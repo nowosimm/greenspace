@@ -8,6 +8,8 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
+import { useOutletContext } from "react-router-dom";
+
 
 import icon from "./images/greenspaceIcon.jpeg";
 
@@ -16,6 +18,7 @@ export default function () {
   const [visible, { toggle }] = useDisclosure(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [user, setUser] = useOutletContext();
 
   const submitForm = async () => {
     let json = {
@@ -47,19 +50,24 @@ export default function () {
       credentials: "include",
       body: JSON.stringify(json),
     });
+    let data = await response.json();
+    setUser(data);
     console.log(response);
+
   };
 
   return (
     <Center>
       <div className="flex">
-        <div className="w-2/5">
+        <div className="w-4/12 block ">
           <img src={icon}></img>
         </div>
         <Center className="flex flex-col">
-          <h1 className="font-semibold">Welcome Back</h1>
-          <div className="px-4 font-body rounded-xl text-md mx-10">
+          <h1 className="font-semibold pb-4">Welcome Back</h1>
+          <div className="px-4 font-body rounded-xl text-md mx-10 flex">
             <form name="form2">
+
+              <div className="p-2 flex">
               <Input.Wrapper
                 label="Username"
                 description=""
@@ -75,8 +83,12 @@ export default function () {
                   id="username"
                   name="username"
                   onChange={(e) => setUsername(e.target.value)}
+                  className="w-64	"
                 />
               </Input.Wrapper>
+              </div>
+
+              <div className="p-2">
               <PasswordInput
                 className="py-2"
                 radius="lg"
@@ -88,9 +100,10 @@ export default function () {
                 type="text"
                 onChange={(e) => setPassword(e.target.value)}
               />
+              </div>
 
               <Center>
-              <button type="button" onClick={loginForm} className="underline underline-offset-2	font-semibold">
+              <button type="button" onClick={loginForm} className="underline underline-offset-2	font-semibold pb-6">
                 Sign In
               </button>
               </Center>
