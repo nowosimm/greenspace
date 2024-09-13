@@ -43,6 +43,7 @@ router.post("/log-in", async (req, res, next) => {
       req.login(user, { session: true }, () => {
         res.send({ _id: user._id, username: user.username });
       });
+
       console.log("here");
     } catch (error) {
       return next(error);
@@ -93,7 +94,7 @@ router.post("/addPage", async (req, res, next) => {
       humidity: req.body.humidity,
       sunlight: req.body.sunlight,
     });
-    if (req.files || Object.keys(req.files).length != 0) {
+    if (req.files && Object.keys(req.files).length != 0) {
       let picture;
       let uploadPath;
       // The name of the input field (i.e. "picture") is used to retrieve the uploaded file
@@ -127,7 +128,17 @@ router.post("/:plant", async (req, res, next) => {
   console.log(req.body);
   try {
     const plant = await Plant.findOne({ _id: req.params.plant });
-    plant.notes = req.body.notes;
+    console.log(plant)
+    if(req.body.notes  != undefined) {
+      plant.notes = req.body.notes;
+    }
+    if(req.body.isMisted  != undefined) {
+      plant.isMisted = req.body.isMisted;
+      console.log("ISMISTED")
+    }
+    if(req.body.isWatered  != undefined) {
+      plant.isWatered = req.body.isWatered;
+    }
     await plant.save();
     res.json(plant);
   } catch (e) {

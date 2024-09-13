@@ -4,10 +4,10 @@ const Schema = mongoose.Schema;
 const PlantSchema = new Schema({
     type: {type: String, required: true, maxLength: 50},
     water: {
-        type: String,
+        type: Number,
         required: true,
-        enum: ["Keep Moist", "Top 1/3", "Top 1/2", "Dry Out"],
-        default: "Keep Moist",
+        min: 1,
+        max: 30,
     },
     sunlight: {
         type: String,
@@ -16,13 +16,22 @@ const PlantSchema = new Schema({
         default: "Direct",
     },
     humidity: {
-        type: String,
+        type: Number,
         required: true,
-        enum: ["Extreme", "High", "Moderate", "Low"],
-        default: "Extreme",
+        min: 1,
+        max: 30,
     },
     picturePath: {type: String, required: false},
     notes: {type: String, required: false, maxLength: 1500},
+    
+    isWatered: {
+        type: Boolean,
+        required: false, 
+    },
+    isMisted: {
+        type: Boolean,
+        required: false, 
+    },
 })
 
 module.exports = mongoose.model("Plant", PlantSchema);

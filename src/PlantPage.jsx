@@ -74,17 +74,28 @@ export default function () {
     {
       icon: IconSpray,
       value: "Plant needs misting",
+      isDone: plant.isMisted,
+      name: "isMisted"
     },
     {
       icon: IconDroplet,
       value: "Plant needs watering",
+      isDone: plant.isWatered,
+      name: "isWatered"
     },
   ];
 
-  const submitForm = async () => {
+  console.log(todayInfo)
+
+  // submitForm(EVENT(), ????)
+  const submitForm = async (e, body) => {
+    console.log(body)
     let json = {
       notes: noteValue,
     };
+    if(body) {
+      json = body;
+    }
     let response = await fetch("http://localhost:3000/" + plantId, {
       method: "POST",
       headers: {
@@ -96,6 +107,23 @@ export default function () {
     console.log(response);
     location.reload();
   };
+
+  const onCheckboxChange = (checkboxName) => {
+    return (e) => {
+      // console.log(checkboxName +": "+ e.currentTarget.checked)
+      console.log(`${checkboxName}: ${e.currentTarget.checked}`)
+      let body = {};
+      if(checkboxName == "isMisted") {
+        body.isMisted = e.currentTarget.checked;
+      }
+      if(checkboxName == "isWatered") {
+        body.isWatered = e.currentTarget.checked;
+      }
+      // body[checkboxName] = e.currentTarget.checked;
+      console.log(body)
+      return submitForm(e, body);
+    }
+  }
 
   return (
     <div className="font-body text-base	">
@@ -152,14 +180,20 @@ export default function () {
               <div className="m-5">
                 <h2 className="mb-2">Today</h2>
                 <div className="flex flex-col p-2 bg-slate-50 rounded-md">
+                  <form>
                   {todayInfo.map((p) => (
                     <Switch
                       // defaultChecked
                       color="rgba(83, 107, 76, 1)"
                       className="flex p-2"
                       label={p.value}
+                      onChange={onCheckboxChange(p.name)}
+                      checked={p.isDone}
+                      name={p.name}
+                      id={p.name}
                     />
                   ))}
+                  </form>
                 </div>
               </div>
 

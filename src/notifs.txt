@@ -1,0 +1,31 @@
+Thoughts on getting each plant on a cycle
+
+Water: 
+Keep Moist - every 4 days
+Top 1/3 - every 7 days
+Top 1/2 - every 10 days
+Dry Out - every 14 days
+
+Humidity: 
+Extreme - every 2 days
+High - every 5 days
+Moderate - every 10 days
+Low - Never
+
+If (humidity === "extreme"){
+    notify every x 2 days
+} 
+and so on.....
+
+
+Thoughts: would it be easier to ask the user for a specific amount of days in between each activity?
+
+Pros:
+More accurate 
+Might be easier to implement
+
+Cons:
+Might be complicated to set up
+
+
+Next goals: Figure out time cycles for plants
