@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "@mantine/core/styles.css";
 import "@mantine/carousel/styles.css";
 import "@mantine/dropzone/styles.css";
+import '@mantine/dates/styles.css';
 import {
   UnstyledButton,
   Text,
@@ -25,7 +26,7 @@ import { MantineProvider } from "@mantine/core";
 
 const links = [
   { icon: IconHome, label: "Home", href: "/" },
-  { icon: IconCalendarEvent, label: "Calender", href: "calendar" },
+  { icon: IconCalendarEvent, label: "Calender", href: "altCal" },
   { icon: IconPhotoScan, label: "Gallery", href: "gallery" },
 ];
 

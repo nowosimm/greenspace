@@ -32,6 +32,14 @@ const PlantSchema = new Schema({
         type: Boolean,
         required: false, 
     },
+    lastWatered: {
+        type: Date,
+        required: false, 
+    },
+    lastMisted: {
+        type: Date,
+        required: false, 
+    },
 })
 
 module.exports = mongoose.model("Plant", PlantSchema);

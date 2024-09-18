@@ -1,8 +1,9 @@
 import { Input, Radio, Group, Text, rem, Slider } from "@mantine/core";
 import { useState, useRef } from "react";
+import { DateInput } from '@mantine/dates';
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import {
-  IconBrightness2,
+  IconSun,
   IconDroplet,
   IconSpray,
   IconPhoto,
@@ -11,14 +12,18 @@ import {
   IconPencil,
   IconCircleNumber1,
 } from "@tabler/icons-react";
+import dayjs from "dayjs";
 
 export default function () {
   const [plantType, setPlantType] = useState("");
   const [sunlightMem, setSunlightMem] = useState("Direct");
   const [waterMem, setWaterMem] = useState(5);
-  const [humidityMem, setHumidityMem] = useState(2);
+  const [humidityMem, setHumidityMem] = useState(5);
+  const [lastWatered, setLastWatered] = useState(dayjs());
+  const [lastMisted, setLastMisted] = useState(dayjs());
   const [files, setFiles] = useState([]);
   const openRef = useRef(null);
+  const [value, setValue] = useState(null);
 
   const submitForm = async () => {
     let formData = new FormData();
@@ -26,6 +31,8 @@ export default function () {
     formData.append("water", waterMem);
     formData.append("humidity", humidityMem);
     formData.append("sunlight", sunlightMem);
+    formData.append("lastWatered", lastWatered);
+    formData.append("lastMisted", lastMisted);
     if (files.length == 1) {
       formData.append("picture", files[0], files[0].name);
     }
@@ -77,7 +84,6 @@ export default function () {
               <div className="bg-slate-50 rounded-lg p-5 flex-1">
                 <Input.Wrapper
                   value={waterMem}
-                  onChange={setWaterMem}
                   name="water"
                   type="number"
                   label="Days Between Watering"
@@ -88,10 +94,19 @@ export default function () {
                     max={30}
                     step={1}
                     defaultValue={5}
+                    onChange={setWaterMem}
                     color="rgba(134, 153, 129, 1)"
                     className="my-4"
                   />
                 </Input.Wrapper>
+                <DateInput
+                  radius="lg"
+                  onChange={setLastWatered}
+                  label="Last Watered"
+                  placeholder="Enter date of last watering"
+                  name="lastWatered"
+                  value={lastWatered}
+                />
               </div>
             </div>
 
@@ -102,7 +117,6 @@ export default function () {
               <div className="bg-slate-50 rounded-lg p-5 flex-1">
                 <Input.Wrapper
                   value={humidityMem}
-                  onChange={setHumidityMem}
                   name="humidity"
                   type="number"
                   label="Days Between Misting"
@@ -112,17 +126,27 @@ export default function () {
                     min={0}
                     max={30}
                     step={1}
-                    defaultValue={2}
+                    defaultValue={5}
+                    onChange={setHumidityMem}
                     color="rgba(134, 153, 129, 1)"
                     className="my-4"
                   />
                 </Input.Wrapper>
+                <DateInput
+                  radius="lg"
+                  onChange={setLastMisted}
+                  label="Last Watered"
+                  placeholder="Enter date of last misting"
+                  name="lastMisted"
+                  value={lastMisted}
+                />
               </div>
+
             </div>
 
             <div className="flex my-3">
               <div className="flex items-center rounded-lg bg-light mr-2">
-                <IconBrightness2 className="m-2"></IconBrightness2>
+                <IconSun className="m-2"></IconSun>
               </div>
               <div className="bg-slate-50 rounded-lg px-5 flex-1">
                 <Radio.Group

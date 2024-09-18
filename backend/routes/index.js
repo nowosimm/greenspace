@@ -93,6 +93,9 @@ router.post("/addPage", async (req, res, next) => {
       water: req.body.water,
       humidity: req.body.humidity,
       sunlight: req.body.sunlight,
+      lastWatered: req.body.lastWatered,
+      lastMisted: req.body.lastMisted,
+
     });
     if (req.files && Object.keys(req.files).length != 0) {
       let picture;
