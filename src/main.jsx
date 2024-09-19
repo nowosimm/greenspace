@@ -11,6 +11,7 @@ import SignUp from './sign-up-form';
 import Plant from './PlantPage';
 import HomePage from './HomePage';
 import AddPage from './AddPage';
+import AltCal from './altCal'
 
 
 const router = createBrowserRouter([
@@ -24,6 +25,9 @@ const router = createBrowserRouter([
       { path: "/plant/:plantId", element: <Plant /> },
       { path: "/HomePage", element: <HomePage /> },
       { path: "/addPage", element: <AddPage /> },
+      { path: "/altCal", element: <AltCal /> },
+
+
 
       { index: true, element: <HomePage /> },
     ]
