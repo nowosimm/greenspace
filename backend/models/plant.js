@@ -40,6 +40,7 @@ const PlantSchema = new Schema({
         type: Date,
         required: false, 
     },
+    user: {type:Schema.Types.ObjectId, ref:"PlantUser", required: true},
 })
 
 module.exports = mongoose.model("Plant", PlantSchema);

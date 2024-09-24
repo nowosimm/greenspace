@@ -1,89 +1,121 @@
 import dayjs from "dayjs";
 import { useState, useEffect } from "react";
-import { Calendar } from "@mantine/dates";
-import { Indicator } from "@mantine/core";
+import { Calendar, Month } from "@mantine/dates";
+import { Indicator, Accordion, rem } from "@mantine/core";
 import { IconDroplet, IconSpray } from "@tabler/icons-react";
 
 export default function () {
-  const [selected, setSelected] = useState();
-  const handleSelect = (date) => {
-    if(selected && selected.isSame(dayjs(date))) {
-        setSelected(undefined)
-    } else {
-        setSelected(dayjs(date));
-    }
-  };
-
-  const dailyTasks = [
-    {
-      icon: IconDroplet,
-      value: "3 plants need watered",
-    },
-    {
-      icon: IconSpray,
-      value: "5 plants need misted",
-    },
-  ];
-
-
+  let today = dayjs().startOf("month");
   const fillerTasks = [
     {
-      day: 3,
+      date: dayjs(today.set("day", 2)),
+      hasTasks: true,
       icon: IconDroplet,
       value: "2 plants need watered",
     },
     {
-      day: 3,
+      date: dayjs(today.set("day", 2)),
+      hasTasks: true,
       icon: IconSpray,
       value: "2 plants need misted",
     },
     {
-      day: 13,
+      date: dayjs(today.set("day", 12)),
+      hasTasks: true,
       icon: IconDroplet,
       value: "5 plants need watered",
     },
     {
-      day: 18,
+      date: dayjs(today.set("day", 17)),
+      hasTasks: true,
+      icon: IconSpray,
+      value: "6 plants need misted",
+    },
+    {
+      date: dayjs(today.set("day", 27)),
+      hasTasks: true,
       icon: IconSpray,
       value: "4 plants need misted",
     },
-    {
-        day: 28,
-        icon: IconSpray,
-        value: "4 plants need misted",
-      },
   ];
+  const [selected, setSelected] = useState(dayjs());
+  const handleSelect = (date) => {
+    if (selected && selected.isSame(dayjs(date))) {
+      setSelected(undefined);
+      return;
+    }
+    const dateObject = dayjs(date);
+    setSelected(dateObject);
+  };
+
+  let selectedDayTasks = [];
+  if (selected) {
+    for (let i = 0; i < fillerTasks.length; i++) {
+      //   console.log(fillerTasks[i].date.format(), selected.format());
+      if (fillerTasks[i].date.isSame(selected)) {
+        selectedDayTasks.push(fillerTasks[i]);
+      }
+    }
+  }
 
   let displayTasks;
-  if (selected) {
+  if (selectedDayTasks.length > 0) {
     displayTasks = (
       <div>
-        Tasks for {selected.format()}
-          {dailyTasks.map((p) => (
-            <div className="flex my-3" key={p.value}>
-              <div className="flex items-center rounded-lg bg-light mr-2 px-1 py-2">
-                <p.icon className="m-1"></p.icon>
-              </div>
-              <div className="flex p-2 bg-slate-50 rounded-md items-center grow">
-                <div>{p.value}</div>
-              </div>
-            </div>
+        <div>
+          <div className="mb-4 font-semibold">
+            Tasks for {selected.format("MMMM D, YYYY")}
+          </div>
+
+          {selectedDayTasks.map((p) => (
+            <Accordion
+              key={p.value}
+              className="bg-slate-50 mb-4 rounded-lg"
+              variant="separated"
+            >
+              <Accordion.Item value="tasks">
+                <Accordion.Control
+                  icon={
+                    <p.icon
+                      style={{
+                        width: rem(20),
+                        height: rem(20),
+                      }}
+                    />
+                  }
+                >
+                  {p.value}
+                </Accordion.Control>
+                <Accordion.Panel>
+                  <ol className="list-disc px-6">
+                    <li>Fiddle Leaf Fig</li>
+                    <li>Velvet Pathos</li>
+                    <li>Fern</li>
+                  </ol>
+                </Accordion.Panel>
+              </Accordion.Item>
+            </Accordion>
           ))}
+        </div>
       </div>
     );
   } else {
-    displayTasks = 
-    <div>
-        <div>There are no tasks for selected date</div>
-    </div>
-
+    displayTasks = (
+      <div>
+        <div className="mb-4 font-semibold">There are no tasks for {selected.format("MMMM D, YYYY")}</div>
+      </div>
+    );
   }
 
   return (
     <div className="flex">
-      <div className="mr-4">
+      <div className="mr-4 flex w-fit h-auto">
         <Calendar
+        className="bg-slate-50 p-4 rounded-xl"
+          size="md"
           firstDayOfWeek={0}
+          maxDate={dayjs().add(3, "month")}
+          minDate={dayjs().subtract(3, "month")}
           renderDay={(date) => {
             const day = date.getDate();
             return (
@@ -91,7 +123,7 @@ export default function () {
                 size={7}
                 color="rgba(134, 153, 129, 1)"
                 offset={-2}
-                disabled={day !== 16}
+                disabled={day !== 18}
               >
                 <div>{day}</div>
               </Indicator>

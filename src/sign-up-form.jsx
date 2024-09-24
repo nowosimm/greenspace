@@ -57,15 +57,44 @@ export default function () {
     console.log(response);
   };
 
+  const logoutForm = async () => {
+    let response = await fetch("http://localhost:3000/log-out", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include"
+    });
+    if(response.status === 200) {
+        navigate("/");
+        console.log(response);
+        setUser({});
+    } else {
+      alert("log-out request failed. check the console");
+      console.error(response)
+    }
+  };
+
   let profileContent;
   if (user.username) {
     profileContent = (
       <div>
-        <div className="flex align-middle mx-6">
-          <Avatar color="cyan" radius="xl" size="lg">
-            MK
-          </Avatar>
-          <p className="flex items-center	pl-4">{user.username}</p>
+        <div className="flex items-center justify-between">
+          <div className="flex align-middle mx-6">
+            <Avatar color="cyan" radius="xl" size="lg">
+              MK
+            </Avatar>
+            <p className="flex items-center	pl-4">{user.username}</p>
+          </div>
+          <Button
+            variant="filled"
+            color="rgba(134, 153, 129, 1)"
+            type="button"
+            onClick={logoutForm}
+            radius="lg"
+          >
+            Logout
+          </Button>
         </div>
         <div className="bg-slate-100 my-4 mx-16 max-w-3xl	">
           <p>Total Plants:</p>

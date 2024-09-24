@@ -33,6 +33,19 @@ const links = [
 export default function () {
   const [plants, setPlants] = useState([]);
   const [user, setUser] = useState({});
+
+  useEffect(() => {
+    const callServer = async () => {
+      let response = await (
+        await fetch("http://localhost:3000/me", {
+          credentials: "include",
+        })
+      ).json();
+      setUser(response);
+    };
+    callServer();
+  }, []);
+
   useEffect(() => {
     const callServer = async () => {
       let response = await (

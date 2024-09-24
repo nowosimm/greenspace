@@ -7,7 +7,7 @@ const PlantUser = require("../models/plantUser");
 
 /* GET home page. */
 router.get("/", async function (req, res, next) {
-  const plants = await Plant.find().exec();
+  const plants = await Plant.find({ user: req.user }).exec();
   res.json(plants);
 });
 router.get("/favicon.ico", async function (req, res, next) {
@@ -51,14 +51,6 @@ router.post("/log-in", async (req, res, next) => {
   })(req, res, next);
 });
 
-router.get("/log-out", (req, res, next) => {
-  req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
-    res.redirect("/");
-  });
-});
 
 router.get(
   "/me",
@@ -66,6 +58,15 @@ router.get(
     res.json(req.user);
   }
 );
+
+router.delete("/log-out", (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.sendStatus(200);
+  });
+});
 
 router.get(
   "/home",
@@ -95,7 +96,7 @@ router.post("/addPage", async (req, res, next) => {
       sunlight: req.body.sunlight,
       lastWatered: req.body.lastWatered,
       lastMisted: req.body.lastMisted,
-
+      user: req.user
     });
     if (req.files && Object.keys(req.files).length != 0) {
       let picture;
@@ -149,5 +150,7 @@ router.post("/:plant", async (req, res, next) => {
     res.sendStatus(500);
   }
 });
+
+
 
 module.exports = router;

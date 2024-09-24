@@ -13,7 +13,6 @@ import HomePage from './HomePage';
 import AddPage from './AddPage';
 import AltCal from './altCal'
 
-
 const router = createBrowserRouter([
   {
     path: "/",
