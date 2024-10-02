@@ -41,6 +41,8 @@ const PlantSchema = new Schema({
         required: false, 
     },
     user: {type:Schema.Types.ObjectId, ref:"PlantUser", required: true},
+    plantIcon: {
+    }
 })
 
 module.exports = mongoose.model("Plant", PlantSchema);

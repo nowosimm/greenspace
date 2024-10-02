@@ -1,23 +1,10 @@
-import { Avatar, Text, Paper, Center } from "@mantine/core";
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { Container } from "@mantine/core";
-import plant from "./images/plant.jpeg";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Pill, ScrollArea, Image, Avatar, Center } from "@mantine/core";
 import { Link, useOutletContext } from "react-router-dom";
-import {
-  faSun,
-  faDroplet,
-  faSprayCanSparkles,
-  faPlantWilt,
-  faSeedling,
-} from "@fortawesome/free-solid-svg-icons";
-
-const sunlightIcon = <FontAwesomeIcon icon={faSun} />;
-const waterIcon = <FontAwesomeIcon icon={faDroplet} />;
-const humidityIcon = <FontAwesomeIcon icon={faSprayCanSparkles} />;
-const fertilizeIcon = <FontAwesomeIcon icon={faPlantWilt} />;
-
+import { IconDroplet, IconSpray } from "@tabler/icons-react";
 import icon from "./images/greenspaceIcon.jpeg";
+import old from "./images/home.jpeg";
 
 export default function () {
   const [plants, setPlants] = useState([]);
@@ -34,59 +21,194 @@ export default function () {
     callServer();
   }, []);
 
+  const mockContent = [
+    {
+      date: "28",
+      iconWater: IconDroplet,
+      iconHumidity: IconSpray,
+      water: "3 plants needs watered",
+      misted: "4 plants need misted",
+    },
+    {
+      date: "29",
+      iconWater: IconDroplet,
+      iconHumidity: IconSpray,
+      water: "2 plants needs watered",
+      misted: "No plants need misted",
+    },
+    {
+      date: "30",
+      iconWater: IconDroplet,
+      iconHumidity: IconSpray,
+      water: "No plants needs watered",
+      misted: "4 plants need misted",
+    },
+    {
+      date: "01",
+      iconWater: IconDroplet,
+      iconHumidity: IconSpray,
+      water: "No plants needs watered",
+      misted: "4 plants need misted",
+    },
+    {
+      date: "02",
+      iconWater: IconDroplet,
+      iconHumidity: IconSpray,
+      water: "No plants needs watered",
+      misted: "4 plants need misted",
+    },
+    {
+      date: "03",
+      iconWater: IconDroplet,
+      iconHumidity: IconSpray,
+      water: "No plants needs watered",
+      misted: "4 plants need misted",
+    },
+    {
+      date: "03",
+      iconWater: IconDroplet,
+      iconHumidity: IconSpray,
+      water: "No plants needs watered",
+      misted: "4 plants need misted",
+    },
+  ];
+
+  const startDate = dayjs();
+  for (let i = 0; i < 7; i++) {
+    const date = startDate.add(i, "day");
+    mockContent[i].date = date;
+  }
+
+  let todaysTasks = [];
+  for (let i = 0; i < plants.length; i++) {
+    var plant = plants[i];
+    const nextMisting = dayjs(plant.lastMisted).add(plant.humidity, "day");
+    if (dayjs().startOf("day").isSame(nextMisting)) {
+      todaysTasks.push({
+        _id: plant._id,
+        icon: IconSpray,
+        type: plant.type,
+        value: "Needs Misted",
+      });
+    }
+    const nextWatering = dayjs(plant.lastWatered).add(plant.water, "day");
+    if (dayjs().startOf("day").isSame(nextWatering)) {
+      todaysTasks.push({
+        _id: plant._id,
+        icon: IconDroplet,
+        type: plant.type,
+        value: "Needs Watered",
+      });
+    }
+  }
+
+  let displayTodaysTasks;
+  if (todaysTasks.length > 0) {
+    displayTodaysTasks = (
+      <ScrollArea h={600}>
+        {todaysTasks.map((p) => (
+          <Link to={`/plant/${p._id}`}>
+            <div className="flex bg-light rounded-xl p-5 my-2 justify-between">
+              <div className="pr-10">
+                <p className="font-semibold">{p.type}</p>
+                <Pill>{p.value}</Pill>
+              </div>
+              <Avatar src={p.icon} size={120} className="max-w-96" />
+            </div>
+          </Link>
+        ))}
+      </ScrollArea>
+    );
+  } else {
+    displayTodaysTasks = 
+    <div className="bg-slate-50 rounded-2xl flex">Yay! You have no tasks today!</div>;
+  }
+
+  let weeklyTasks = [];
+  for (let i = 0; i < plants.length; i++) {
+    var plant = plants[i];
+    for (let j = 0; j < 7; j++) {
+      const date = startDate.add(j, "day").startOf("day");
+      const nextMisting = dayjs(plant.lastMisted).add(plant.humidity, "day");
+      if (date.isSame(nextMisting)) {
+        weeklyTasks.push({
+          _id: plant._id,
+          type: plant.type,
+          date: date,
+          value: `${plant.type} needs misting`
+        });
+      }
+      const nextWatering = dayjs(plant.lastWatered).add(plant.water, "day");
+      if (date.isSame(nextWatering)) {
+        weeklyTasks.push({
+          _id: plant._id,
+          type: plant.type,
+          date: date,
+          value: `${plant.type} needs watering`
+        });
+      }
+      if (date.isSame()) {
+        weeklyTasks.push({
+          _id: plant._id,
+          type: plant.type,
+          date: date,
+          value: `there are no tasks`
+        });
+      }
+    }
+  }
+
   let homeContent;
   if (user.username) {
     homeContent = (
-      <div className="w-full">
-        <h1 className="font-body font-bold mb-5">Tasks for 07.26</h1>
-        <div className="grid grid-cols-3 gap-5 font-body">
-          {plants.map((p) => (
-            <Link to={`/plant/${p._id}`}>
-              <Paper
-                key={p._id}
-                radius="md"
-                withBorder
-                p="lg"
-                bg="var(--mantine-color-body)"
-              >
-                <Avatar
-                  src={plant}
-                  size={120}
-                  radius={120}
-                  mx="auto"
-                  className="max-w-96"
-                />
-                <div>
-                  <Text ta="center" fz="lg" fw={500} mt="md">
-                    {p.type}
-                  </Text>
-                  <Text ta="center" fz="sm">
-                    {waterIcon} Needs watering in 5 days
-                  </Text>
-                  <Text ta="center" fz="sm">
-                    {humidityIcon} Needs misting in 3 days
-                  </Text>
+      <div>
+        <div className="grid grid-cols-3 gap-8 font-body">
+          {/* column one */}
+          <div>
+            <div className="mb-2">
+              <h1 className="flex flex-1 rounded-xl font-semibold">
+                Todays Tasks
+              </h1>
+            </div>
+            <div>{displayTodaysTasks}</div>
+          </div>
+          {/* column two */}
+          <div>
+            <div className="mb-2">
+              <h1 className="flex flex-1 rounded-xl font-semibold">
+                Featured Plant
+              </h1>
+            </div>
+            <Image radius="md" src={old} h="auto" w="auto" fit="contain" />
+          </div>
+          {/* column three */}
+          <div>
+            <div className="mb-2">
+              <h1 className="flex flex-1 rounded-xl font-semibold">
+                Upcoming Tasks
+              </h1>
+            </div>
+            {weeklyTasks.map((p) => (
+              <div className="bg-slate-50 p-3 rounded-xl m-2">
+                <div className="flex justify-between	">
+                  <div className="flex-col items-center">
+                    <p className="flex">{p.date.format("ddd")}</p>
+                    <p>{p.date.format("DD")}</p>
+                    <hr className="border-t-1 border-slate-800 rounded-2xl"></hr>
+                  </div>
+                  <div>
+                    <div className="px-5 flex">
+                      <div className="m-1">{p.value}</div>
+                    </div>
+                    <div className="px-5 flex">
+                      {/* <div className="m-1">{p.misted}</div> */}
+                    </div>
+                  </div>
                 </div>
-              </Paper>
-            </Link>
-          ))}
+              </div>
+            ))}
+          </div>
         </div>
-
-        <Link to="/calendar">
-          <Container className="rounded-lg my-5 p-2 font-body border border-gray-200">
-            <p className="font-semibold mb-2">Upcoming Tasks</p>
-            <p className="ml-3">{waterIcon} 2 plants need watering tomorrow</p>
-          </Container>
-        </Link>
-
-        <Link to="/calendar">
-          <Container className="rounded-lg my-5 p-2 font-body border border-gray-200">
-            <p className="font-semibold mb-2">Reminders</p>
-            <p className="ml-3">
-              {fertilizeIcon} 3 plants need fertilized this month
-            </p>
-          </Container>
-        </Link>
       </div>
     );
   } else {
@@ -94,16 +216,18 @@ export default function () {
       <Center className="flex flex-col">
         <div className="flex text-xl">
           <h2>Welcome to</h2>
-          <h2 className="font-decorative pl-2">Greenspace</h2>
+          <h2 className="font-decorative pl-3">Greenspace</h2>
         </div>
         <div className="w-5/12 block ">
           <img src={icon}></img>
         </div>
         <div className="flex">
           <Link to="/sign-up">
-          <p className="underline underline-offset-2 font-semibold">Sign In</p>
+            <p className="underline underline-offset-2 font-semibold">
+              Sign In
+            </p>
           </Link>
-        <p className="pl-2">to View Plants</p>
+          <p className="pl-2">to View Plants</p>
         </div>
       </Center>
     );

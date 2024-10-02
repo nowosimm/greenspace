@@ -151,6 +151,4 @@ router.post("/:plant", async (req, res, next) => {
   }
 });
 
-
-
 module.exports = router;

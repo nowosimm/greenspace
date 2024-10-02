@@ -19,8 +19,8 @@ export default function () {
   const [sunlightMem, setSunlightMem] = useState("Direct");
   const [waterMem, setWaterMem] = useState(5);
   const [humidityMem, setHumidityMem] = useState(5);
-  const [lastWatered, setLastWatered] = useState(dayjs());
-  const [lastMisted, setLastMisted] = useState(dayjs());
+  const [lastWatered, setLastWatered] = useState(dayjs().startOf("day").toDate());
+  const [lastMisted, setLastMisted] = useState(dayjs().startOf("day").toDate());
   const [files, setFiles] = useState([]);
   const openRef = useRef(null);
   const [value, setValue] = useState(null);
