@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Pill, ScrollArea, Image, Avatar, Center } from "@mantine/core";
 import { Link, useOutletContext } from "react-router-dom";
-import { IconDroplet, IconSpray } from "@tabler/icons-react";
+import { IconDroplet, IconSpray, IconMoodSmile } from "@tabler/icons-react";
 import icon from "./images/greenspaceIcon.jpeg";
 import old from "./images/home.jpeg";
 
@@ -111,7 +111,7 @@ export default function () {
             <div className="flex bg-light rounded-xl p-5 my-2 justify-between">
               <div className="pr-10">
                 <p className="font-semibold">{p.type}</p>
-                <Pill>{p.value}</Pill>
+                <Pill className="m-2">{p.value}</Pill>
               </div>
               <Avatar src={p.icon} size={120} className="max-w-96" />
             </div>
@@ -120,8 +120,12 @@ export default function () {
       </ScrollArea>
     );
   } else {
-    displayTodaysTasks = 
-    <div className="bg-slate-50 rounded-2xl flex">Yay! You have no tasks today!</div>;
+    displayTodaysTasks = (
+      <div className="bg-slate-50 rounded-2xl flex p-5">
+        Yay! You have no tasks today! 
+      <IconMoodSmile></IconMoodSmile>
+      </div>
+    );
   }
 
   let weeklyTasks = [];
@@ -135,7 +139,7 @@ export default function () {
           _id: plant._id,
           type: plant.type,
           date: date,
-          value: `${plant.type} needs misting`
+          value: `${plant.type} needs misting`,
         });
       }
       const nextWatering = dayjs(plant.lastWatered).add(plant.water, "day");
@@ -144,15 +148,7 @@ export default function () {
           _id: plant._id,
           type: plant.type,
           date: date,
-          value: `${plant.type} needs watering`
-        });
-      }
-      if (date.isSame()) {
-        weeklyTasks.push({
-          _id: plant._id,
-          type: plant.type,
-          date: date,
-          value: `there are no tasks`
+          value: `${plant.type} needs watering`,
         });
       }
     }
@@ -188,25 +184,28 @@ export default function () {
                 Upcoming Tasks
               </h1>
             </div>
-            {weeklyTasks.map((p) => (
-              <div className="bg-slate-50 p-3 rounded-xl m-2">
-                <div className="flex justify-between	">
-                  <div className="flex-col items-center">
-                    <p className="flex">{p.date.format("ddd")}</p>
-                    <p>{p.date.format("DD")}</p>
-                    <hr className="border-t-1 border-slate-800 rounded-2xl"></hr>
-                  </div>
-                  <div>
-                    <div className="px-5 flex">
-                      <div className="m-1">{p.value}</div>
+            <ScrollArea h={600}>
+              {weeklyTasks.map((p) => (
+                <div className="bg-slate-50 p-3 rounded-xl m-2">
+                  <div className="flex justify-between">
+                    <div className="flex flex-col items-center">
+                      <p className="flex font-light">{p.date.format("ddd")}</p>
+                      <p className="font-semibold tracking-wide">
+                        {p.date.format("DD")}
+                      </p>
+                      <hr className="border-t-1 border-slate-800 rounded-2xl"></hr>
                     </div>
-                    <div className="px-5 flex">
-                      {/* <div className="m-1">{p.misted}</div> */}
+                    <div>
+                      <div className="px-5 flex">
+                        <div className="m-1 flex justify-center">{p.value}</div>
+                      </div>
+                      <div className="px-5 flex">
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </ScrollArea>
           </div>
         </div>
       </div>

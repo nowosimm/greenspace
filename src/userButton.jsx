@@ -20,7 +20,7 @@ export function UserButton({ user }) {
         </Text>
 
         <Text c="dimmed" size="xs">
-          Create Account
+          View Profile
         </Text>
       </div>
 

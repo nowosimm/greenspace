@@ -8,7 +8,7 @@ import {
   Avatar,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
 
 import icon from "./images/greenspaceIcon.jpeg";
@@ -19,6 +19,7 @@ export default function () {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useOutletContext();
+  const [plants, setPlants] = useState([]);
   const navigate = useNavigate();
 
   const submitForm = async () => {
@@ -35,6 +36,7 @@ export default function () {
       body: JSON.stringify(json),
     });
     console.log(response);
+    navigate("/");
     close();
   };
 
@@ -63,25 +65,57 @@ export default function () {
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include"
+      credentials: "include",
     });
-    if(response.status === 200) {
-        navigate("/");
-        console.log(response);
-        setUser({});
+    if (response.status === 200) {
+      navigate("/");
+      console.log(response);
+      setUser({});
     } else {
       alert("log-out request failed. check the console");
-      console.error(response)
+      console.error(response);
     }
+    navigate("/");
   };
+
+  useEffect(() => {
+    const callServer = async () => {
+      let response = await (
+        await fetch("http://localhost:3000/", {
+          credentials: "include",
+        })
+      ).json();
+      setPlants(response);
+    };
+    callServer();
+  }, []);
+
+  let plantAmount = plants.length;
+  let firstPlant = plants[0];
+  let lastPlant = plants[plants.length - 1];
+
+  const mockContent = [
+    {
+      title: "Total Plants",
+      value: plantAmount,
+    },
+    {
+      title: "Oldest Plant",
+      value: firstPlant && firstPlant.type,
+    },
+    {
+      title: "Newest Plant",
+      value: lastPlant && lastPlant.type,
+    },
+  ];
 
   let profileContent;
   if (user.username) {
     profileContent = (
       <div>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between bg-light rounded-2xl py-5">
           <div className="flex align-middle mx-6">
-            <Avatar color="cyan" radius="xl" size="lg">
+            <Avatar color="white" radius="xl" size="lg">
               MK
             </Avatar>
             <p className="flex items-center	pl-4">{user.username}</p>
@@ -92,14 +126,18 @@ export default function () {
             type="button"
             onClick={logoutForm}
             radius="lg"
+            className="mr-5"
           >
             Logout
           </Button>
         </div>
-        <div className="bg-slate-100 my-4 mx-16 max-w-3xl	">
-          <p>Total Plants:</p>
-          <p>Oldest Plant:</p>
-          <p>Newest Plant:</p>
+        <div className="flex">
+          {mockContent.map((p) => (
+            <div className="flex flex-col m-5">
+              <h2 className="bg-soft rounded-t-lg px-8 py-2 text-white flex justify-center">{p.title}</h2>
+              <p className="bg-slate-100 rounded-b-lg flex justify-center py-4"> {p.value}</p>
+            </div>
+          ))}
         </div>
       </div>
     );

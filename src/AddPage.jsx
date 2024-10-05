@@ -1,5 +1,6 @@
 import { Input, Radio, Group, Text, rem, Slider } from "@mantine/core";
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { DateInput } from '@mantine/dates';
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import {
@@ -9,8 +10,7 @@ import {
   IconPhoto,
   IconUpload,
   IconX,
-  IconPencil,
-  IconCircleNumber1,
+  IconPencil
 } from "@tabler/icons-react";
 import dayjs from "dayjs";
 
@@ -24,6 +24,7 @@ export default function () {
   const [files, setFiles] = useState([]);
   const openRef = useRef(null);
   const [value, setValue] = useState(null);
+  const navigate = useNavigate();
 
   const submitForm = async () => {
     let formData = new FormData();
@@ -45,6 +46,8 @@ export default function () {
       credentials: "include",
     });
     console.log(response);
+    navigate(`/`);
+
   };
   return (
     <form name="form1">
