@@ -23,7 +23,6 @@ const PlantSchema = new Schema({
     },
     picturePath: {type: String, required: false},
     notes: {type: String, required: false, maxLength: 1500},
-    
     isWatered: {
         type: Boolean,
         required: false, 

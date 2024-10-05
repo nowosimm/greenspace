@@ -5,6 +5,7 @@ const passport = require("passport");
 const Plant = require("../models/plant");
 const PlantUser = require("../models/plantUser");
 
+
 /* GET home page. */
 router.get("/", async function (req, res, next) {
   const plants = await Plant.find({ user: req.user }).exec();
@@ -136,12 +137,12 @@ router.post("/:plant", async (req, res, next) => {
     if(req.body.notes  != undefined) {
       plant.notes = req.body.notes;
     }
-    if(req.body.isMisted  != undefined) {
-      plant.isMisted = req.body.isMisted;
-      console.log("ISMISTED")
+    if(req.body.lastMisted  != undefined) {
+      plant.lastMisted = req.body.lastMisted;
+      console.log("lastMisted")
     }
-    if(req.body.isWatered  != undefined) {
-      plant.isWatered = req.body.isWatered;
+    if(req.body.lastWatered  != undefined) {
+      plant.lastWatered = req.body.lastWatered;
     }
     await plant.save();
     res.json(plant);

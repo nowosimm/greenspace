@@ -1,5 +1,5 @@
 import { Carousel } from "@mantine/carousel";
-import { JsonInput, Tabs, rem, Switch, Group, Text } from "@mantine/core";
+import { JsonInput, Tabs, rem, Group, Text, Checkbox } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import "@mantine/carousel/styles.css";
 import { useParams } from "react-router-dom";
@@ -78,10 +78,12 @@ export default function () {
     {
       icon: IconDroplet,
       value: wateringMessage,
+      name: "isWatered",
     },
     {
       icon: IconSpray,
       value: mistingMessage,
+      name: "isMisted",
     },
   ];
 
@@ -104,14 +106,12 @@ export default function () {
 
   const onCheckboxChange = (checkboxName) => {
     return (e) => {
-      // console.log(checkboxName +": "+ e.currentTarget.checked)
-      console.log(`${checkboxName}: ${e.currentTarget.checked}`);
       let body = {};
       if (checkboxName == "isMisted") {
-        body.isMisted = e.currentTarget.checked;
+        body.lastMisted = dayjs().startOf("day");
       }
       if (checkboxName == "isWatered") {
-        body.isWatered = e.currentTarget.checked;
+        body.lastWatered = dayjs().startOf("day");
       }
       console.log(body);
       return submitForm(e, body);
@@ -126,8 +126,9 @@ export default function () {
         <div className="flex flex-col p-2 bg-slate-50 rounded-md">
           <form>
             {todayInfo.map((p) => (
-              <Switch
-                // defaultChecked
+              <Checkbox
+                radius="xl"
+                size="md"
                 color="rgba(83, 107, 76, 1)"
                 className="flex p-2"
                 label={p.value}
@@ -151,8 +152,20 @@ export default function () {
               <div className="flex items-center rounded-lg bg-light mr-2 px-1 py-2">
                 <p.icon className="m-1"></p.icon>
               </div>
-              <div className="flex p-2 bg-slate-50 rounded-md items-center grow">
+              <div className="flex p-2 bg-slate-50 rounded-md items-center grow justify-between">
                 <div>{p.value}</div>
+                <form>
+                  <Checkbox
+                    radius="xl"
+                    size="md"
+                    color="rgba(83, 107, 76, 1)"
+                    className="flex p-2"
+                    onChange={onCheckboxChange(p.name)}
+                    checked={p.isDone}
+                    name={p.name}
+                    id={p.name}
+                  />
+                </form>
               </div>
             </div>
           ))}
