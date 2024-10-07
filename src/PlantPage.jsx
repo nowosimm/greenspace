@@ -6,9 +6,11 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 dayjs.extend(relativeTime);
+dayjs.extend(localizedFormat);
 import {
-  IconPlus,
+  IconSettings,
   IconList,
   IconInfoCircle,
   IconPhoto,
@@ -16,7 +18,7 @@ import {
   IconDroplet,
   IconSpray,
   IconLeaf,
-  IconShovelPitchforks,
+  IconGift,
   IconUpload,
   IconX,
 } from "@tabler/icons-react";
@@ -59,6 +61,8 @@ export default function () {
       dayjs(nextMisting).fromNow(true) + " overdue for scheduled misting";
   }
 
+  // const plantBirthday = (plant.plantBirthday.dayjs())
+
   const careInfo = [
     {
       icon: IconSun,
@@ -71,6 +75,10 @@ export default function () {
     {
       icon: IconSpray,
       value: "I need misted every " + plant.humidity + " days",
+    },
+    {
+      icon: IconGift,
+      value: "My birthday is " + dayjs(plant.purchaseDate).format('LL'),
     },
   ];
 
@@ -102,7 +110,6 @@ export default function () {
     },
   ];
 
-  console.log(todayInfo);
 
   const onCheckboxChange = (checkboxName) => {
     return (e) => {
@@ -211,9 +218,16 @@ export default function () {
         </div>
 
         <div className="mx-5">
+          <div className="flex justify-between">
           <div className="font-decorative text-3xl pb-4 mb-2 text-coolBlack">
             {plant.type}
           </div>
+          <div>
+            <button><IconSettings></IconSettings></button>
+          </div>
+
+          </div>
+
           <Tabs color="rgba(119, 140, 130, 1)" defaultValue="tasks">
             <Tabs.List grow justify="center">
               <Tabs.Tab
@@ -286,6 +300,8 @@ export default function () {
                     <div className="flex p-2 bg-slate-50 rounded-md items-center grow">
                       <div>{p.value}</div>
                     </div>
+
+
                   </div>
                 ))}
                 <form name="notes" className="flex flex-col mt-5">

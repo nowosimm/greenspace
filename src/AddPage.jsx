@@ -10,7 +10,8 @@ import {
   IconPhoto,
   IconUpload,
   IconX,
-  IconPencil
+  IconPencil,
+  IconGift
 } from "@tabler/icons-react";
 import dayjs from "dayjs";
 
@@ -21,6 +22,7 @@ export default function () {
   const [humidityMem, setHumidityMem] = useState(5);
   const [lastWatered, setLastWatered] = useState(dayjs().startOf("day").toDate());
   const [lastMisted, setLastMisted] = useState(dayjs().startOf("day").toDate());
+  const [purchaseDate, setPurchaseDate] = useState(dayjs().startOf("day").toDate());
   const [files, setFiles] = useState([]);
   const openRef = useRef(null);
   const [value, setValue] = useState(null);
@@ -34,6 +36,7 @@ export default function () {
     formData.append("sunlight", sunlightMem);
     formData.append("lastWatered", lastWatered);
     formData.append("lastMisted", lastMisted);
+    formData.append("purchaseDate", purchaseDate);
     if (files.length == 1) {
       formData.append("picture", files[0], files[0].name);
     }
@@ -63,7 +66,7 @@ export default function () {
                 <Input.Wrapper
                   label="Plant Name"
                   error=""
-                  description="Input description"
+                  // description="Input description"
                 >
                   <Input
                     placeholder="Enter plant type / nickname here"
@@ -73,6 +76,25 @@ export default function () {
                     id="type"
                     onChange={(e) => setPlantType(e.target.value)}
                   />
+                </Input.Wrapper>
+              </div>
+            </div>
+            <div className="flex my-3">
+              <div className="flex items-center rounded-lg bg-light mr-2">
+                <IconGift className="m-2"></IconGift>
+              </div>
+              <div className="bg-slate-50 rounded-lg p-5 flex-1">
+                <Input.Wrapper
+                  label="Plant Birthday"
+                  error=""
+                  description="Enter date plant was acquired"
+                >
+                <DateInput
+                  radius="lg"
+                  onChange={setPurchaseDate}
+                  name="purchaseDate"
+                  value={purchaseDate}
+                />
                 </Input.Wrapper>
               </div>
             </div>

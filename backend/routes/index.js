@@ -97,6 +97,7 @@ router.post("/addPage", async (req, res, next) => {
       sunlight: req.body.sunlight,
       lastWatered: req.body.lastWatered,
       lastMisted: req.body.lastMisted,
+      purchaseDate: req.body.purchaseDate,
       user: req.user
     });
     if (req.files && Object.keys(req.files).length != 0) {
