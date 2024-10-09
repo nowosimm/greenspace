@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import { Link } from 'react-router-dom'
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
 import {
@@ -223,7 +224,10 @@ export default function () {
             {plant.type}
           </div>
           <div>
+            <Link to={`/plant/${plant._id}/edit`}>
             <button><IconSettings></IconSettings></button>
+            </Link>
+
           </div>
 
           </div>

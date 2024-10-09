@@ -5,7 +5,6 @@ const passport = require("passport");
 const Plant = require("../models/plant");
 const PlantUser = require("../models/plantUser");
 
-
 /* GET home page. */
 router.get("/", async function (req, res, next) {
   const plants = await Plant.find({ user: req.user }).exec();
@@ -52,13 +51,9 @@ router.post("/log-in", async (req, res, next) => {
   })(req, res, next);
 });
 
-
-router.get(
-  "/me",
-  async function (req, res, next) {
-    res.json(req.user);
-  }
-);
+router.get("/me", async function (req, res, next) {
+  res.json(req.user);
+});
 
 router.delete("/log-out", (req, res, next) => {
   req.logout((err) => {
@@ -69,13 +64,10 @@ router.delete("/log-out", (req, res, next) => {
   });
 });
 
-router.get(
-  "/home",
-  async function (req, res, next) {
-    const plants = await Plant.find().exec();
-    res.json(plants);
-  }
-);
+router.get("/home", async function (req, res, next) {
+  const plants = await Plant.find().exec();
+  res.json(plants);
+});
 
 router.get("/plant/:plantId/picture/:fileName", (req, res, next) => {
   const picturePath = __dirname + "/../plant-pictures/" + req.params.fileName;
@@ -98,7 +90,7 @@ router.post("/addPage", async (req, res, next) => {
       lastWatered: req.body.lastWatered,
       lastMisted: req.body.lastMisted,
       purchaseDate: req.body.purchaseDate,
-      user: req.user
+      user: req.user,
     });
     if (req.files && Object.keys(req.files).length != 0) {
       let picture;
@@ -124,27 +116,47 @@ router.post("/addPage", async (req, res, next) => {
 });
 
 router.get("/:plant", async (req, res, next) => {
-  const plants = await Plant.findOne({ _id: req.params.plant })
-    .populate("type")
-    .exec();
-  res.json(plants);
+  try {
+    const plants = await Plant.findOne({ _id: req.params.plant })
+      .populate("type")
+      .exec();
+    res.json(plants);
+  } catch (e) {
+    res.status(500).send(e);
+  }
 });
 
 router.post("/:plant", async (req, res, next) => {
   console.log(req.body);
   try {
     const plant = await Plant.findOne({ _id: req.params.plant });
-    console.log(plant)
-    if(req.body.notes  != undefined) {
+    // console.log(plant);
+    if (req.body.type != undefined) {
+      plant.type = req.body.type;
+    }
+    if (req.body.water != undefined) {
+      plant.water = req.body.water;
+    }
+    if (req.body.sunlight != undefined) {
+      plant.sunlight = req.body.sunlight;
+    }
+    if (req.body.humidity != undefined) {
+      plant.humidity = req.body.humidity;
+    }
+    if (req.body.notes != undefined) {
       plant.notes = req.body.notes;
     }
-    if(req.body.lastMisted  != undefined) {
+    if (req.body.lastMisted != undefined) {
       plant.lastMisted = req.body.lastMisted;
-      console.log("lastMisted")
+      // console.log("lastMisted");
     }
-    if(req.body.lastWatered  != undefined) {
+    if (req.body.lastWatered != undefined) {
       plant.lastWatered = req.body.lastWatered;
     }
+    if (req.body.purchaseDate != undefined) {
+      plant.purchaseDate = req.body.purchaseDate;
+    }
+
     await plant.save();
     res.json(plant);
   } catch (e) {
@@ -152,5 +164,17 @@ router.post("/:plant", async (req, res, next) => {
     res.sendStatus(500);
   }
 });
+
+// router.post("/:plant/delete", async (req, res) => {
+//   try {
+//     const plant = await Plant.findOne({ _id: req.params.plant });
+//     if (plant.deletedCount === 0) {
+//       return res.status(404).json({ message: 'Plant not found' });
+//     }
+//     res.redirect(`/`);
+//   } catch (error) {
+//     res.status(500).json({ message: 'An error occurred', error: error.message });
+//   }
+// });
 
 module.exports = router;

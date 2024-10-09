@@ -12,6 +12,7 @@ import Plant from './PlantPage';
 import HomePage from './HomePage';
 import AddPage from './AddPage';
 import AltCal from './altCal'
+import EditPlant from './EditPlant'
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
       { path: "/HomePage", element: <HomePage /> },
       { path: "/addPage", element: <AddPage /> },
       { path: "/altCal", element: <AltCal /> },
+      { path: "/plant/:plantId/edit", element: <EditPlant /> },
 
 
 
