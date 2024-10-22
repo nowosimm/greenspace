@@ -90,6 +90,7 @@ router.post("/addPage", async (req, res, next) => {
       lastWatered: req.body.lastWatered,
       lastMisted: req.body.lastMisted,
       purchaseDate: req.body.purchaseDate,
+      plantIcon: req.body.plantIcon,
       user: req.user,
     });
     if (req.files && Object.keys(req.files).length != 0) {
@@ -155,6 +156,9 @@ router.post("/:plant", async (req, res, next) => {
     }
     if (req.body.purchaseDate != undefined) {
       plant.purchaseDate = req.body.purchaseDate;
+    }
+    if (req.body.plantIcon != undefined) {
+      plant.plantIcon = req.body.plantIcon;
     }
 
     await plant.save();

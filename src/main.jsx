@@ -4,8 +4,6 @@ import './index.css'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import App from "./App.jsx";
-
-import Calendar from './Calendar';
 import Gallery from './Gallery';
 import SignUp from './sign-up-form';
 import Plant from './PlantPage';
@@ -19,7 +17,6 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      { path: "/calendar", element: <Calendar /> },
       { path: "/gallery", element: <Gallery /> },
       { path: "/sign-up", element: <SignUp /> },
       { path: "/plant/:plantId", element: <Plant /> },

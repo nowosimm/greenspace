@@ -5,6 +5,7 @@ import classes from "../css/UserButton.module.css";
 import { useState, useEffect } from "react";
 
 
+
 export function UserButton({ user }) {
   let buttonContent;
   if(user.username) {
