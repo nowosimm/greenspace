@@ -2,9 +2,20 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Pill, ScrollArea, Image, Avatar, Center } from "@mantine/core";
 import { Link, useOutletContext } from "react-router-dom";
-import { IconDroplet, IconSpray, IconMoodSmile } from "@tabler/icons-react";
+import{
+  IconDroplet,
+  IconSpray,
+  IconMoodSmile,
+  IconPlant,
+  IconCactus,
+  IconFlower,
+  IconGrowth,
+  IconLeaf,
+  IconSeeding,
+} from "@tabler/icons-react";
+import * as tabler from "@tabler/icons-react";
 import icon from "./images/greenspaceIcon.jpeg";
-import old from "./images/home.jpeg";
+import "../css/Gallery.css";
 
 export default function () {
   const [plants, setPlants] = useState([]);
@@ -20,6 +31,69 @@ export default function () {
     };
     callServer();
   }, []);
+
+  const gallery = [];
+  for (let i = 0; i < plants.length; i++) {
+    var plant = plants[i];
+    if (plant.picturePath) {
+      gallery.push({
+        _id: plant._id,
+        src: `http://localhost:3000/plant/${plant._id}/picture/${plant.picturePath}`,
+        type: plant.type,
+      });
+      console.log(plant.src);
+    }
+  }
+
+  const icons = [
+    {
+      icon: IconPlant,
+      value: "IconPlant",
+    },
+    {
+      icon: IconCactus,
+      value: "IconCactus",
+    },
+    {
+      icon: IconFlower,
+      value: "IconFlower",
+    },
+    {
+      icon: IconGrowth,
+      value: "IconGrowth",
+    },
+    {
+      icon: IconLeaf,
+      value: "IconLeaf",
+    },
+    {
+      icon: IconSeeding,
+      value: "IconSeeding",
+    },
+  ]
+
+  console.log(gallery);
+
+  let randomGallery;
+  if (gallery.length > 0) {
+    const randomIndex = Math.floor(Math.random() * gallery.length);
+    const randomItem = gallery[randomIndex];
+    const randomSrc = randomItem.src;
+    const plantName = randomItem.type;
+    const link = `/plant/${randomItem._id}`;
+    randomGallery = (
+      <Link to={link}>
+        <div className="container">
+          <img src={randomSrc} className="image rounded-xl"></img>
+          <div className="middle">
+            <div className="text">{plantName}</div>
+          </div>
+        </div>
+      </Link>
+    );
+  } else {
+    randomGallery = <div>no images SADLY</div>;
+  }
 
   const mockContent = [
     {
@@ -83,19 +157,21 @@ export default function () {
   for (let i = 0; i < plants.length; i++) {
     var plant = plants[i];
     const nextMisting = dayjs(plant.lastMisted).add(plant.humidity, "day");
+    const icon = tabler[plant.plantIcon]
     if (dayjs().startOf("day").isSame(nextMisting)) {
       todaysTasks.push({
         _id: plant._id,
-        icon: IconSpray,
+        icon: icon,
         type: plant.type,
         value: "Needs Misted",
       });
     }
     const nextWatering = dayjs(plant.lastWatered).add(plant.water, "day");
+
     if (dayjs().startOf("day").isSame(nextWatering)) {
       todaysTasks.push({
         _id: plant._id,
-        icon: IconDroplet,
+        icon: icon,
         type: plant.type,
         value: "Needs Watered",
       });
@@ -113,7 +189,8 @@ export default function () {
                 <p className="font-semibold">{p.type}</p>
                 <Pill className="m-2">{p.value}</Pill>
               </div>
-              <Avatar src={p.icon} size={120} className="max-w-96" />
+              {/* <Avatar src={p.icon} size={120} className="max-w-96" /> */}
+              <p.icon></p.icon>
             </div>
           </Link>
         ))}
@@ -122,8 +199,8 @@ export default function () {
   } else {
     displayTodaysTasks = (
       <div className="bg-slate-50 rounded-2xl flex p-5">
-        Yay! You have no tasks today! 
-      <IconMoodSmile></IconMoodSmile>
+        Yay! You have no tasks today!
+        <IconMoodSmile></IconMoodSmile>
       </div>
     );
   }
@@ -175,7 +252,7 @@ export default function () {
                 Featured Plant
               </h1>
             </div>
-            <Image radius="md" src={old} h="auto" w="auto" fit="contain" />
+            <div>{randomGallery}</div>
           </div>
           {/* column three */}
           <div>
@@ -199,8 +276,7 @@ export default function () {
                       <div className="px-5 flex">
                         <div className="m-1 flex justify-center">{p.value}</div>
                       </div>
-                      <div className="px-5 flex">
-                      </div>
+                      <div className="px-5 flex"></div>
                     </div>
                   </div>
                 </div>
@@ -230,6 +306,7 @@ export default function () {
         </div>
       </Center>
     );
+
   }
   return <div>{homeContent}</div>;
 }
