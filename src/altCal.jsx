@@ -8,6 +8,10 @@ import { Link, useOutletContext } from "react-router-dom";
 
 export default function () {
   const [plants, setPlants] = useState([]);
+  const [allTasks, setAllTasks] = useState([]);
+  const [selectedDayTasks, setSelectedDayTasks] = useState([]);
+  const today = dayjs().startOf("day");
+  const [selected, setSelected] = useState(today);
   // const [plant, setPlant] = useState({});
   let { plantId } = useParams();
   const [user, setUser] = useOutletContext();
@@ -23,124 +27,93 @@ export default function () {
     callServer();
   }, []);
 
+  useEffect(() => {
+    // loop over each day in the month to see if there is a task
+    let tasks = [];
+    for (let i = 0; i < plants.length; i++) {
+      var plant = plants[i];
+      const nextMisting = dayjs(plant.lastMisted).add(plant.humidity, "day");
+      tasks.push({
+        _id: plant._id,
+        date: nextMisting,
+        icon: IconSpray,
+        type: plant.type,
+        value: "Needs Misted",
+      });
+      const nextWatering = dayjs(plant.lastWatered).add(plant.water, "day");
+      tasks.push({
+        _id: plant._id,
+        date: nextWatering,
+        icon: IconDroplet,
+        type: plant.type,
+        value: "Needs Watered",
+      });
+    }
+    setAllTasks(tasks);
+  }, [plants]);
 
-  let firstWater = [];
-
-  console.log(firstWater);
-
-  let today = dayjs().startOf("month");
-  const fillerTasks = [
-    {
-      date: dayjs(today.set("day", 2)),
-      hasTasks: true,
-      icon: IconDroplet,
-      value: "Needs Watered",
-      type: "Velvet Pathos",
-    },
-    {
-      date: dayjs(today.set("day", 2)),
-      hasTasks: true,
-      icon: IconSpray,
-      value: "Needs Misted",
-      type: "Fiddle Leaf Fig",
-    },
-    {
-      date: dayjs(today.set("day", 2)),
-      hasTasks: true,
-      icon: IconDroplet,
-      value: "Needs Watered",
-      type: "Fern",
-    },
-    {
-      date: dayjs(today.set("day", 2)),
-      hasTasks: true,
-      icon: IconSpray,
-      value: "Needs Misted",
-      type: "Bonsai",
-    },
-    {
-      date: dayjs(today.set("day", 12)),
-      hasTasks: true,
-      icon: IconDroplet,
-      value: "Needs Watered",
-      type: "String of Pearls",
-    },
-    {
-      date: dayjs(today.set("day", 17)),
-      hasTasks: true,
-      icon: IconSpray,
-      value: "Needs Misted",
-      type: "Chinese Money",
-    },
-    {
-      date: dayjs(today.set("day", 23)),
-      hasTasks: true,
-      icon: IconSpray,
-      value: "Needs Misted",
-      type: "Golden Madonna",
-    },
-  ];
-
-
-  const [selected, setSelected] = useState(dayjs().startOf("day"));
   const handleSelect = (date) => {
+    setSelectedDayTasks([]);
     if (selected && selected.isSame(dayjs(date))) {
       return;
     }
     const dateObject = dayjs(date);
     setSelected(dateObject);
   };
-  // console.log(selected)
 
-  let selectedDayTasks = [];
-
-// display misting info
-  for (let i = 0; i < plants.length; i++) {
-    var plant = plants[i];
-    const nextMisting = dayjs(plant.lastMisted).add(plant.humidity, "day");
-    if (dayjs(plant.lastMisted).isSame(selected)) {
-      selectedDayTasks.push({
-        _id: plant._id,
-        date: selected,
-        icon: IconSpray,
-        type: plant.type,
-        value: "Misting Completed"
-      });
-    } 
-    if (dayjs(selected).isSame(nextMisting)) {
-      selectedDayTasks.push({
-        _id: plant._id,
-        date: selected,
-        icon: IconSpray,
-        type: plant.type,
-        value: "Needs Misted"
-      });
+  useEffect(() => {
+    const selectedTasks = [];
+    // display misting info
+    for (let i = 0; i < plants.length; i++) {
+      var plant = plants[i];
+      const nextMisting = dayjs(plant.lastMisted).add(plant.humidity, "day");
+      if (dayjs(plant.lastMisted).isSame(selected)) {
+        selectedTasks.push({
+          _id: plant._id,
+          date: selected,
+          icon: IconSpray,
+          type: plant.type,
+          value: "Misting Completed",
+        });
+      }
+      if (dayjs(selected).isSame(nextMisting)) {
+        selectedTasks.push({
+          _id: plant._id,
+          date: selected,
+          icon: IconSpray,
+          type: plant.type,
+          value: "Needs Misted",
+        });
+      }
     }
-  }
 
-// display watering info
-  for (let i = 0; i < plants.length; i++) {
-    var plant = plants[i];
-    const nextWatering = dayjs(plant.lastWatered).add(plant.water, "day");
-    if (dayjs(plant.lastWatered).isSame(selected)) {
-      selectedDayTasks.push({
-        _id: plant._id,
-        date: selected,
-        icon: IconDroplet,
-        type: plant.type,
-        value: "Watering Completed"
-      });
-    } 
-    if (dayjs(selected).isSame(nextWatering)) {
-      selectedDayTasks.push({
-        _id: plant._id,
-        date: selected,
-        icon: IconDroplet,
-        type: plant.type,
-        value: "Needs Watered"
-      });
+    // display watering info
+    for (let i = 0; i < plants.length; i++) {
+      var plant = plants[i];
+      const nextWatering = dayjs(plant.lastWatered).add(plant.water, "day");
+      if (dayjs(plant.lastWatered).isSame(selected)) {
+        selectedTasks.push({
+          _id: plant._id,
+          date: selected,
+          icon: IconDroplet,
+          type: plant.type,
+          value: "Watering Completed",
+        });
+      }
+      if (dayjs(selected).isSame(nextWatering)) {
+        selectedTasks.push({
+          _id: plant._id,
+          date: selected,
+          icon: IconDroplet,
+          type: plant.type,
+          value: "Needs Watered",
+        });
+      }
     }
-  }
+
+    setSelectedDayTasks(selectedTasks);
+  }, [plants, selected]);
+
   let displayTasks;
   if (selectedDayTasks.length > 0) {
     displayTasks = (
@@ -152,7 +125,7 @@ export default function () {
           <ScrollArea h={275}>
             <div className="flex flex-col m-2">
               {selectedDayTasks.map((p) => (
-                <Link to={`/plant/${p._id}`} className="p-2" key={p.date}>
+                <Link to={`/plant/${p._id}`} className="p-2" key={p._id}>
                   <div>
                     <div className="flex">
                       <div className="flex items-center rounded-lg bg-light mr-2">
@@ -192,12 +165,16 @@ export default function () {
           minDate={dayjs().subtract(3, "month")}
           renderDay={(date) => {
             const day = date.getDate();
+            const hasTasksForDay = allTasks.some((task) =>
+              dayjs(task.date).isSame(dayjs(date), "day")
+            );
+
             return (
               <Indicator
-                size={7}
+                size={6}
                 color="rgba(134, 153, 129, 1)"
                 offset={-2}
-                disabled={day !== 18}
+                disabled={!hasTasksForDay}
               >
                 <div>{day}</div>
               </Indicator>
