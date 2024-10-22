@@ -1,7 +1,7 @@
-import { Input, Radio, Group, Text, rem, Slider } from "@mantine/core";
+import { Input, Radio, Group, Text, rem, Slider, Button } from "@mantine/core";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { DateInput } from '@mantine/dates';
+import { DateInput } from "@mantine/dates";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import {
   IconSun,
@@ -11,18 +11,29 @@ import {
   IconUpload,
   IconX,
   IconPencil,
-  IconGift
+  IconGift,
+  IconPlant,
+  IconCactus,
+  IconFlower,
+  IconGrowth,
+  IconLeaf,
+  IconSeeding,
 } from "@tabler/icons-react";
 import dayjs from "dayjs";
 
 export default function () {
   const [plantType, setPlantType] = useState("");
   const [sunlightMem, setSunlightMem] = useState("Direct");
+  const [plantIcon, setPlantIcon] = useState("");
   const [waterMem, setWaterMem] = useState(5);
   const [humidityMem, setHumidityMem] = useState(5);
-  const [lastWatered, setLastWatered] = useState(dayjs().startOf("day").toDate());
+  const [lastWatered, setLastWatered] = useState(
+    dayjs().startOf("day").toDate()
+  );
   const [lastMisted, setLastMisted] = useState(dayjs().startOf("day").toDate());
-  const [purchaseDate, setPurchaseDate] = useState(dayjs().startOf("day").toDate());
+  const [purchaseDate, setPurchaseDate] = useState(
+    dayjs().startOf("day").toDate()
+  );
   const [files, setFiles] = useState([]);
   const openRef = useRef(null);
   const [value, setValue] = useState(null);
@@ -37,6 +48,7 @@ export default function () {
     formData.append("lastWatered", lastWatered);
     formData.append("lastMisted", lastMisted);
     formData.append("purchaseDate", purchaseDate);
+    formData.append("plantIcon", plantIcon);
     if (files.length == 1) {
       formData.append("picture", files[0], files[0].name);
     }
@@ -50,7 +62,6 @@ export default function () {
     });
     console.log(response);
     navigate(`/`);
-
   };
   return (
     <form name="form1">
@@ -89,13 +100,74 @@ export default function () {
                   error=""
                   description="Enter date plant was acquired"
                 >
-                <DateInput
-                  radius="lg"
-                  onChange={setPurchaseDate}
-                  name="purchaseDate"
-                  value={purchaseDate}
-                />
+                  <DateInput
+                    radius="lg"
+                    onChange={setPurchaseDate}
+                    name="purchaseDate"
+                    value={purchaseDate}
+                  />
                 </Input.Wrapper>
+              </div>
+            </div>
+            <div className="flex my-3">
+              <div className="flex items-center rounded-lg bg-light mr-2">
+                <IconGift className="m-2"></IconGift>
+              </div>
+              <div className="bg-slate-50 rounded-lg p-5 flex-1">
+                  <Radio.Group
+                    value={plantIcon}
+                    onChange={setPlantIcon}
+                    name="plantIcon"
+                    label={<span className="font-semibold">Plant Icon</span>}
+                    description="Icon will appear on task list"
+                    className=""
+                  >
+                    <Group mt="xs" name="plantIcon" id="plantIcon">
+                      <Radio
+                        value="IconCactus"
+                        label={<IconCactus></IconCactus>}
+                        color="rgba(134, 153, 129, 1)"
+                      />
+                      <Radio
+                        value="IconPlant"
+                        label={<IconPlant></IconPlant>}
+                        color="rgba(134, 153, 129, 1)"
+                      />
+                      <Radio
+                        value="IconFlower"
+                        label={<IconFlower></IconFlower>}
+                        color="rgba(134, 153, 129, 1)"
+                      />
+                      <Radio
+                        value="IconLeaf"
+                        label={<IconLeaf></IconLeaf>}
+                        color="rgba(134, 153, 129, 1)"
+                      />
+                      <Radio
+                        value="IconSeeding"
+                        label={<IconSeeding></IconSeeding>}
+                        color="rgba(134, 153, 129, 1)"
+                      />
+                    </Group>
+                  </Radio.Group>
+
+                  {/* <div className="flex mt-4">
+                  <Button color="rgba(134, 153, 129, 1)" radius="lg" className="mx-1">
+                    <IconCactus></IconCactus>
+                  </Button>
+                  <Button color="rgba(134, 153, 129, 1)" radius="lg" className="mx-1">
+                    <IconPlant></IconPlant>
+                  </Button>
+                  <Button color="rgba(134, 153, 129, 1)" radius="lg" className="mx-1">
+                    <IconFlower></IconFlower>
+                  </Button>
+                  <Button color="rgba(134, 153, 129, 1)" radius="lg" className="mx-1">
+                    <IconLeaf></IconLeaf>
+                  </Button>
+                  <Button color="rgba(134, 153, 129, 1)" radius="lg" className="mx-1">
+                    <IconSeeding></IconSeeding>
+                  </Button>
+                  </div> */}
               </div>
             </div>
           </div>
@@ -166,7 +238,6 @@ export default function () {
                   value={lastMisted}
                 />
               </div>
-
             </div>
 
             <div className="flex my-3">
