@@ -1,5 +1,13 @@
 import { Carousel } from "@mantine/carousel";
-import { JsonInput, Tabs, rem, Group, Text, Checkbox } from "@mantine/core";
+import {
+  JsonInput,
+  Tabs,
+  rem,
+  Group,
+  Text,
+  Checkbox,
+  Center,
+} from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import "@mantine/carousel/styles.css";
 import { useParams } from "react-router-dom";
@@ -7,7 +15,7 @@ import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
 import {
@@ -18,10 +26,19 @@ import {
   IconSun,
   IconDroplet,
   IconSpray,
-  IconLeaf,
+  IconPhotoPlus,
   IconGift,
   IconUpload,
   IconX,
+  IconPlant,
+  IconCactus,
+  IconFlower,
+  IconGrowth,
+  IconLeaf,
+  IconSeeding
+
+
+
 } from "@tabler/icons-react";
 
 export default function () {
@@ -44,25 +61,31 @@ export default function () {
   }, [plantId]);
 
   let wateringMessage = "";
-  const nextWatering = dayjs(plant.lastWatered).add(plant.water, "day");
+  const nextWatering = dayjs(plant.lastWatered).startOf("day").add(plant.water, "day");
   if (dayjs().isBefore(nextWatering)) {
     wateringMessage = dayjs().to(nextWatering, true) + " until next watering";
-  } else {
+  } 
+  if (dayjs().startOf("day") == (nextWatering)) {
+    wateringMessage = plant.type + " needs watering today";
+  }
+  else {
     wateringMessage =
       dayjs(nextWatering).fromNow(true) + " overdue for scheduled watering";
   }
   console.log(wateringMessage);
 
   let mistingMessage = "";
-  const nextMisting = dayjs(plant.lastMisted).add(plant.humidity, "day");
+  const nextMisting = dayjs(plant.lastMisted).startOf("day").add(plant.humidity, "day");
   if (dayjs().isBefore(nextMisting)) {
     mistingMessage = dayjs().to(nextMisting, true) + " until next misting";
-  } else {
+  } 
+  if (dayjs().startOf("day") == (nextMisting)) {
+    wateringMessage = plant.type + " needs watering today";
+  }
+  else {
     mistingMessage =
       dayjs(nextMisting).fromNow(true) + " overdue for scheduled misting";
   }
-
-  // const plantBirthday = (plant.plantBirthday.dayjs())
 
   const careInfo = [
     {
@@ -79,7 +102,7 @@ export default function () {
     },
     {
       icon: IconGift,
-      value: "My birthday is " + dayjs(plant.purchaseDate).format('LL'),
+      value: "My birthday is " + dayjs(plant.purchaseDate).format("LL"),
     },
   ];
 
@@ -102,24 +125,27 @@ export default function () {
       value: "Plant needs misting",
       isDone: plant.isMisted,
       name: "isMisted",
+      data: "humidityHistory"
     },
     {
       icon: IconDroplet,
       value: "Plant needs watering",
       isDone: plant.isWatered,
       name: "isWatered",
+      data: "waterHistory"
     },
   ];
-
 
   const onCheckboxChange = (checkboxName) => {
     return (e) => {
       let body = {};
       if (checkboxName == "isMisted") {
         body.lastMisted = dayjs().startOf("day");
+        body.humidityHistory = dayjs().startOf("day");
       }
       if (checkboxName == "isWatered") {
         body.lastWatered = dayjs().startOf("day");
+        body.waterHistory = dayjs().startOf("day");
       }
       console.log(body);
       return submitForm(e, body);
@@ -182,6 +208,36 @@ export default function () {
     );
   }
 
+
+  let showImages;
+  if (plant.picturePath) {
+    showImages = (
+      <div>
+        <Carousel withIndicators>
+          {plant.picturePath && (
+            <Carousel.Slide>
+              <img
+                src={`http://localhost:3000/plant/${plant._id}/picture/${plant.picturePath}`}
+              ></img>
+            </Carousel.Slide>
+          )}
+        </Carousel>
+      </div>
+    );
+  } else {
+    showImages = (
+      <div className="bg-slate-50 rounded-lg flex flex-col mx-6 h-full">
+        <Center className="flex flex-col p-10 h-full">
+          Greenspace is better with images!
+          <div className="p-6">
+          <IconPhotoPlus></IconPhotoPlus>
+          </div>
+
+        </Center>
+      </div>
+    );
+  }
+
   // submitForm(EVENT(), ????)
   const submitForm = async (e, body) => {
     console.log(body);
@@ -206,30 +262,20 @@ export default function () {
   return (
     <div className="font-body text-base	">
       <div className="grid grid-cols-2">
-        <div>
-          <Carousel withIndicators>
-            {plant.picturePath && (
-              <Carousel.Slide>
-                <img
-                  src={`http://localhost:3000/plant/${plant._id}/picture/${plant.picturePath}`}
-                ></img>
-              </Carousel.Slide>
-            )}
-          </Carousel>
-        </div>
+        <div>{showImages}</div>
 
         <div className="mx-5">
           <div className="flex justify-between">
-          <div className="font-decorative text-3xl pb-4 mb-2 text-coolBlack">
-            {plant.type}
-          </div>
-          <div>
-            <Link to={`/plant/${plant._id}/edit`}>
-            <button><IconSettings></IconSettings></button>
-            </Link>
-
-          </div>
-
+            <div className="font-decorative text-3xl pb-4 mb-2 text-coolBlack">
+              {plant.type}
+            </div>
+            <div>
+              <Link to={`/plant/${plant._id}/edit`}>
+                <button>
+                  <IconSettings></IconSettings>
+                </button>
+              </Link>
+            </div>
           </div>
 
           <Tabs color="rgba(119, 140, 130, 1)" defaultValue="tasks">
@@ -304,8 +350,6 @@ export default function () {
                     <div className="flex p-2 bg-slate-50 rounded-md items-center grow">
                       <div>{p.value}</div>
                     </div>
-
-
                   </div>
                 ))}
                 <form name="notes" className="flex flex-col mt-5">

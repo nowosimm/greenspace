@@ -48,6 +48,18 @@ const PlantSchema = new Schema({
     type: Date,
     required: true,
   },
-});
+  waterHistory: [
+    {type: Date}
+  ],
+  humidityHistory: [
+    {type: Date}
+  ],
+  plantIcon: {
+    type: String,
+    required: true,
+    enum: ["IconPlant", "IconCactus", "IconFlower", "IconGrowth", "IconLeaf", "IconSeeding"],
+    default: "IconPlant",
+  },
 
+});
 module.exports = mongoose.model("Plant", PlantSchema);

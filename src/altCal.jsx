@@ -12,7 +12,6 @@ export default function () {
   const [selectedDayTasks, setSelectedDayTasks] = useState([]);
   const today = dayjs().startOf("day");
   const [selected, setSelected] = useState(today);
-  // const [plant, setPlant] = useState({});
   let { plantId } = useParams();
   const [user, setUser] = useOutletContext();
   useEffect(() => {
@@ -28,28 +27,24 @@ export default function () {
   }, []);
 
   useEffect(() => {
-    // loop over each day in the month to see if there is a task
-    let tasks = [];
+    let futureTasks = [];
+    let in3Months = dayjs().add(3, "month");
     for (let i = 0; i < plants.length; i++) {
       var plant = plants[i];
-      const nextMisting = dayjs(plant.lastMisted).add(plant.humidity, "day");
-      tasks.push({
-        _id: plant._id,
-        date: nextMisting,
-        icon: IconSpray,
-        type: plant.type,
-        value: "Needs Misted",
-      });
-      const nextWatering = dayjs(plant.lastWatered).add(plant.water, "day");
-      tasks.push({
-        _id: plant._id,
-        date: nextWatering,
-        icon: IconDroplet,
-        type: plant.type,
-        value: "Needs Watered",
-      });
+      let lastMisted = dayjs(plant.lastMisted);
+      while (lastMisted.isBefore(in3Months)) {
+        futureTasks.push({
+          _id: `${plant._id}${lastMisted}`,
+          date: lastMisted,
+          icon: IconSpray,
+          type: plant.type,
+          value: "Needs Misted",
+        });
+        lastMisted = lastMisted.add(plant.humidity, "day");
+      }
     }
-    setAllTasks(tasks);
+    console.log(futureTasks);
+    setAllTasks(futureTasks);
   }, [plants]);
 
   const handleSelect = (date) => {
@@ -62,57 +57,12 @@ export default function () {
   };
 
   useEffect(() => {
-    const selectedTasks = [];
-    // display misting info
-    for (let i = 0; i < plants.length; i++) {
-      var plant = plants[i];
-      const nextMisting = dayjs(plant.lastMisted).add(plant.humidity, "day");
-      if (dayjs(plant.lastMisted).isSame(selected)) {
-        selectedTasks.push({
-          _id: plant._id,
-          date: selected,
-          icon: IconSpray,
-          type: plant.type,
-          value: "Misting Completed",
-        });
-      }
-      if (dayjs(selected).isSame(nextMisting)) {
-        selectedTasks.push({
-          _id: plant._id,
-          date: selected,
-          icon: IconSpray,
-          type: plant.type,
-          value: "Needs Misted",
-        });
-      }
-    }
+    const tasksForDay = allTasks.filter((task) =>
+      dayjs(task.date).isSame(dayjs(selected), "day")
+    );
 
-    // display watering info
-    for (let i = 0; i < plants.length; i++) {
-      var plant = plants[i];
-      const nextWatering = dayjs(plant.lastWatered).add(plant.water, "day");
-      if (dayjs(plant.lastWatered).isSame(selected)) {
-        selectedTasks.push({
-          _id: plant._id,
-          date: selected,
-          icon: IconDroplet,
-          type: plant.type,
-          value: "Watering Completed",
-        });
-      }
-      if (dayjs(selected).isSame(nextWatering)) {
-        selectedTasks.push({
-          _id: plant._id,
-          date: selected,
-          icon: IconDroplet,
-          type: plant.type,
-          value: "Needs Watered",
-        });
-      }
-    }
-
-    setSelectedDayTasks(selectedTasks);
-  }, [plants, selected]);
+    setSelectedDayTasks(tasksForDay);
+  }, [plants, selected, allTasks]);
 
   let displayTasks;
   if (selectedDayTasks.length > 0) {
