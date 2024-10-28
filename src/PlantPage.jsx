@@ -35,10 +35,7 @@ import {
   IconFlower,
   IconGrowth,
   IconLeaf,
-  IconSeeding
-
-
-
+  IconSeeding,
 } from "@tabler/icons-react";
 
 export default function () {
@@ -46,6 +43,11 @@ export default function () {
   let { plantId } = useParams();
   const [plant, setPlant] = useState({});
   const [noteValue, setNoteValue] = useState();
+  const [isWatered, setIsWatered] = useState(false);
+  const [isMisted, setIsMisted] = useState(false);
+  const [lastWatered, setLastWatered] = useState(dayjs().startOf("day").toDate());
+  const [lastMisted, setLastMisted] = useState(dayjs().startOf("day").toDate());
+
   useEffect(() => {
     const callServer = async () => {
       let response = await (
@@ -55,37 +57,15 @@ export default function () {
       ).json();
       setPlant(response);
       setNoteValue(response.notes);
-      console.log(response);
+      setIsWatered(dayjs(response.lastWatered).startOf("day").isSame(dayjs().startOf("day"))
+      );
+      setIsMisted(
+        dayjs(response.lastMisted).startOf("day").isSame(dayjs().startOf("day"))
+      );
+      setLastWatered(dayjs(response.lastWatered).startOf('day'))
     };
     callServer();
   }, [plantId]);
-
-  let wateringMessage = "";
-  const nextWatering = dayjs(plant.lastWatered).startOf("day").add(plant.water, "day");
-  if (dayjs().isBefore(nextWatering)) {
-    wateringMessage = dayjs().to(nextWatering, true) + " until next watering";
-  } 
-  if (dayjs().startOf("day") == (nextWatering)) {
-    wateringMessage = plant.type + " needs watering today";
-  }
-  else {
-    wateringMessage =
-      dayjs(nextWatering).fromNow(true) + " overdue for scheduled watering";
-  }
-  console.log(wateringMessage);
-
-  let mistingMessage = "";
-  const nextMisting = dayjs(plant.lastMisted).startOf("day").add(plant.humidity, "day");
-  if (dayjs().isBefore(nextMisting)) {
-    mistingMessage = dayjs().to(nextMisting, true) + " until next misting";
-  } 
-  if (dayjs().startOf("day") == (nextMisting)) {
-    wateringMessage = plant.type + " needs watering today";
-  }
-  else {
-    mistingMessage =
-      dayjs(nextMisting).fromNow(true) + " overdue for scheduled misting";
-  }
 
   const careInfo = [
     {
@@ -106,108 +86,105 @@ export default function () {
     },
   ];
 
-  const taskInfo = [
-    {
-      icon: IconDroplet,
-      value: wateringMessage,
-      name: "isWatered",
-    },
-    {
-      icon: IconSpray,
-      value: mistingMessage,
-      name: "isMisted",
-    },
-  ];
-
-  const todayInfo = [
-    {
-      icon: IconSpray,
-      value: "Plant needs misting",
-      isDone: plant.isMisted,
-      name: "isMisted",
-      data: "humidityHistory"
-    },
-    {
-      icon: IconDroplet,
-      value: "Plant needs watering",
-      isDone: plant.isWatered,
-      name: "isWatered",
-      data: "waterHistory"
-    },
-  ];
-
   const onCheckboxChange = (checkboxName) => {
     return (e) => {
       let body = {};
       if (checkboxName == "isMisted") {
         body.lastMisted = dayjs().startOf("day");
-        body.humidityHistory = dayjs().startOf("day");
+        setIsMisted(true);
+        setLastMisted();
       }
       if (checkboxName == "isWatered") {
         body.lastWatered = dayjs().startOf("day");
-        body.waterHistory = dayjs().startOf("day");
+        setIsWatered(true);
+        setLastWatered();
       }
       console.log(body);
       return submitForm(e, body);
     };
   };
 
-  let alertWateringTasks;
-  if (nextMisting.isSame()) {
-    alertWateringTasks = (
-      <div className="m-5">
-        <h2 className="mb-2">Today</h2>
-        <div className="flex flex-col p-2 bg-slate-50 rounded-md">
-          <form>
-            {todayInfo.map((p) => (
-              <Checkbox
-                radius="xl"
-                size="md"
-                color="rgba(83, 107, 76, 1)"
-                className="flex p-2"
-                label={p.value}
-                onChange={onCheckboxChange(p.name)}
-                checked={p.isDone}
-                name={p.name}
-                id={p.name}
-              />
-            ))}
-          </form>
-        </div>
-      </div>
-    );
+  let wateringMessage = "";
+  const nextWatering = dayjs(plant.lastWatered)
+    .startOf("day")
+    .add(plant.water, "day");
+  if (dayjs().isBefore(nextWatering)) {
+    wateringMessage = dayjs().to(nextWatering, true) + " until next watering";
+  }
+  if (dayjs().startOf("day") == nextWatering) {
+    wateringMessage = plant.type + " needs watering today";
+  }
+  if (isWatered == true) {
+    wateringMessage = plant.type + " watering completed";
   } else {
-    alertWateringTasks = (
-      <div className="m-5">
-        <h2 className="mb-2">Upcoming</h2>
-        <div>
-          {taskInfo.map((p) => (
-            <div className="flex my-3">
-              <div className="flex items-center rounded-lg bg-light mr-2 px-1 py-2">
-                <p.icon className="m-1"></p.icon>
-              </div>
-              <div className="flex p-2 bg-slate-50 rounded-md items-center grow justify-between">
-                <div>{p.value}</div>
-                <form>
-                  <Checkbox
-                    radius="xl"
-                    size="md"
-                    color="rgba(83, 107, 76, 1)"
-                    className="flex p-2"
-                    onChange={onCheckboxChange(p.name)}
-                    checked={p.isDone}
-                    name={p.name}
-                    id={p.name}
-                  />
-                </form>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
+    wateringMessage =
+      dayjs(nextWatering).fromNow(true) + " overdue for scheduled watering";
+  }
+  console.log(wateringMessage);
+
+  let mistingMessage = "";
+  const nextMisting = dayjs(plant.lastMisted)
+    .startOf("day")
+    .add(plant.humidity, "day");
+  if (dayjs().isBefore(nextMisting)) {
+    mistingMessage = dayjs().to(nextMisting, true) + " until next misting";
+  }
+  if (dayjs().startOf("day") == nextMisting) {
+    mistingMessage = plant.type + " needs watering today";
+  }
+  if (isMisted == true) {
+    mistingMessage = plant.type + " misting completed";
+  } else {
+    mistingMessage =
+      dayjs(nextMisting).fromNow(true) + " overdue for scheduled misting";
   }
 
+  const todayInfo = [
+    {
+      icon: IconSpray,
+      value: mistingMessage,
+      isDone: isMisted,
+      name: "isMisted",
+      data: "humidityHistory",
+    },
+    {
+      icon: IconDroplet,
+      value: wateringMessage,
+      isDone: isWatered,
+      name: "isWatered",
+      data: "waterHistory",
+    },
+  ];
+
+  let alertTasks = (
+    <div className="m-5">
+      <h2 className="mb-2">Upcoming Tasks</h2>
+      <div>
+        {todayInfo.map((p) => (
+          <div className="flex my-3">
+            <div className="flex items-center rounded-lg bg-light mr-2 px-1 py-2">
+              <p.icon className="m-1"></p.icon>
+            </div>
+            <div className="flex p-2 bg-slate-50 rounded-md items-center grow justify-between">
+              <div>{p.value}</div>
+              <form>
+                <Checkbox
+                  radius="xl"
+                  size="md"
+                  color="rgba(83, 107, 76, 1)"
+                  className="flex p-2"
+                  onChange={onCheckboxChange(p.name)}
+                  checked={p.isDone}
+                  name={p.name}
+                  id={p.name}
+                />
+              </form>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
   let showImages;
   if (plant.picturePath) {
@@ -230,9 +207,8 @@ export default function () {
         <Center className="flex flex-col p-10 h-full">
           Greenspace is better with images!
           <div className="p-6">
-          <IconPhotoPlus></IconPhotoPlus>
+            <IconPhotoPlus></IconPhotoPlus>
           </div>
-
         </Center>
       </div>
     );
@@ -302,42 +278,7 @@ export default function () {
             </Tabs.List>
 
             <Tabs.Panel value="tasks">
-              <div>{alertWateringTasks}</div>
-              {/* <div className="m-5">
-                <h2 className="mb-2">Today</h2>
-                <div className="flex flex-col p-2 bg-slate-50 rounded-md">
-                  <form>
-                    {todayInfo.map((p) => (
-                      <Switch
-                        // defaultChecked
-                        color="rgba(83, 107, 76, 1)"
-                        className="flex p-2"
-                        label={p.value}
-                        onChange={onCheckboxChange(p.name)}
-                        checked={p.isDone}
-                        name={p.name}
-                        id={p.name}
-                      />
-                    ))}
-                  </form>
-                </div>
-              </div>
-
-              <div className="m-5">
-                <h2 className="mb-2">Upcoming</h2>
-                <div>
-                  {taskInfo.map((p) => (
-                    <div className="flex my-3">
-                      <div className="flex items-center rounded-lg bg-light mr-2 px-1 py-2">
-                        <p.icon className="m-1"></p.icon>
-                      </div>
-                      <div className="flex p-2 bg-slate-50 rounded-md items-center grow">
-                        <div>{p.value}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div> */}
+              <div>{alertTasks}</div>
             </Tabs.Panel>
 
             <Tabs.Panel value="care">

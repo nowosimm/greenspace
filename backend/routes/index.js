@@ -149,10 +149,11 @@ router.post("/:plant", async (req, res, next) => {
     }
     if (req.body.lastMisted != undefined) {
       plant.lastMisted = req.body.lastMisted;
-      // console.log("lastMisted");
+      plant.humidityHistory.push(req.body.lastMisted);
     }
     if (req.body.lastWatered != undefined) {
       plant.lastWatered = req.body.lastWatered;
+      plant.waterHistory.push(req.body.lastWatered);
     }
     if (req.body.purchaseDate != undefined) {
       plant.purchaseDate = req.body.purchaseDate;
@@ -169,16 +170,5 @@ router.post("/:plant", async (req, res, next) => {
   }
 });
 
-// router.post("/:plant/delete", async (req, res) => {
-//   try {
-//     const plant = await Plant.findOne({ _id: req.params.plant });
-//     if (plant.deletedCount === 0) {
-//       return res.status(404).json({ message: 'Plant not found' });
-//     }
-//     res.redirect(`/`);
-//   } catch (error) {
-//     res.status(500).json({ message: 'An error occurred', error: error.message });
-//   }
-// });
 
 module.exports = router;
