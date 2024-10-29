@@ -30,41 +30,36 @@ import {
   IconGift,
   IconUpload,
   IconX,
-  IconPlant,
-  IconCactus,
-  IconFlower,
-  IconGrowth,
-  IconLeaf,
-  IconSeeding,
+  IconPencil,
 } from "@tabler/icons-react";
 
 export default function () {
   const iconStyle = { width: rem(12), height: rem(12) };
+  const today = dayjs().startOf("day");
   let { plantId } = useParams();
   const [plant, setPlant] = useState({});
+  const [files, setFiles] = useState([]);
   const [noteValue, setNoteValue] = useState();
   const [isWatered, setIsWatered] = useState(false);
   const [isMisted, setIsMisted] = useState(false);
-  const [lastWatered, setLastWatered] = useState(dayjs().startOf("day").toDate());
-  const [lastMisted, setLastMisted] = useState(dayjs().startOf("day").toDate());
+  const [lastWatered, setLastWatered] = useState(today.toDate());
+  const [lastMisted, setLastMisted] = useState(today.toDate());
+
+  const getPlant = async () => {
+    let response = await (
+      await fetch("http://localhost:3000/" + plantId, {
+        credentials: "include",
+      })
+    ).json();
+    setPlant(response);
+    setNoteValue(response.notes);
+    setIsWatered(dayjs(response.lastWatered).startOf("day").isSame(today));
+    setIsMisted(dayjs(response.lastMisted).startOf("day").isSame(today));
+    setLastWatered(dayjs(response.lastWatered).startOf("day"));
+  };
 
   useEffect(() => {
-    const callServer = async () => {
-      let response = await (
-        await fetch("http://localhost:3000/" + plantId, {
-          credentials: "include",
-        })
-      ).json();
-      setPlant(response);
-      setNoteValue(response.notes);
-      setIsWatered(dayjs(response.lastWatered).startOf("day").isSame(dayjs().startOf("day"))
-      );
-      setIsMisted(
-        dayjs(response.lastMisted).startOf("day").isSame(dayjs().startOf("day"))
-      );
-      setLastWatered(dayjs(response.lastWatered).startOf('day'))
-    };
-    callServer();
+    getPlant();
   }, [plantId]);
 
   const careInfo = [
@@ -90,18 +85,55 @@ export default function () {
     return (e) => {
       let body = {};
       if (checkboxName == "isMisted") {
-        body.lastMisted = dayjs().startOf("day");
+        body.lastMisted = today;
         setIsMisted(true);
         setLastMisted();
       }
       if (checkboxName == "isWatered") {
-        body.lastWatered = dayjs().startOf("day");
+        body.lastWatered = today;
         setIsWatered(true);
         setLastWatered();
       }
       console.log(body);
       return submitForm(e, body);
     };
+  };
+
+  const fileUpload = async () => {
+    let formData = new FormData();
+    if (files.length > 0) {
+      files.forEach((f) => {
+        formData.append("picture", f);
+      })
+    }
+
+    let response = await fetch("http://localhost:3000/" + plantId, {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    });
+    console.log(response);
+    getPlant();
+  };
+
+  const submitForm = async (e, body) => {
+    console.log(body);
+    let json = {
+      notes: noteValue,
+    };
+    if (body) {
+      json = body;
+    }
+    let response = await fetch("http://localhost:3000/" + plantId, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(json),
+    });
+    console.log(response);
+    location.reload();
   };
 
   let wateringMessage = "";
@@ -111,12 +143,13 @@ export default function () {
   if (dayjs().isBefore(nextWatering)) {
     wateringMessage = dayjs().to(nextWatering, true) + " until next watering";
   }
-  if (dayjs().startOf("day") == nextWatering) {
+  if (today == nextWatering) {
     wateringMessage = plant.type + " needs watering today";
   }
   if (isWatered == true) {
     wateringMessage = plant.type + " watering completed";
-  } else {
+  }
+  if (nextWatering.isBefore(today)) {
     wateringMessage =
       dayjs(nextWatering).fromNow(true) + " overdue for scheduled watering";
   }
@@ -126,15 +159,16 @@ export default function () {
   const nextMisting = dayjs(plant.lastMisted)
     .startOf("day")
     .add(plant.humidity, "day");
-  if (dayjs().isBefore(nextMisting)) {
+  if (today.isBefore(nextMisting)) {
     mistingMessage = dayjs().to(nextMisting, true) + " until next misting";
   }
-  if (dayjs().startOf("day") == nextMisting) {
-    mistingMessage = plant.type + " needs watering today";
+  if (dayjs().isSame(nextMisting)) {
+    mistingMessage = plant.type + " needs misting today";
   }
   if (isMisted == true) {
     mistingMessage = plant.type + " misting completed";
-  } else {
+  }
+  if (nextMisting.isBefore(today)) {
     mistingMessage =
       dayjs(nextMisting).fromNow(true) + " overdue for scheduled misting";
   }
@@ -153,6 +187,23 @@ export default function () {
       isDone: isWatered,
       name: "isWatered",
       data: "waterHistory",
+    },
+  ];
+
+  const careHistory = [
+    {
+      icon: IconSpray,
+      date: dayjs(lastMisted).format("MM-DD-YYYY"),
+      // day: dayjs(lastMisted).format("ddd"),
+      // month: dayjs(lastMisted).format("MMM"),
+      message: "Previously misted",
+    },
+    {
+      icon: IconDroplet,
+      date: dayjs(lastWatered).format("MM-DD-YYYY"),
+      // day: dayjs(lastWatered).format("ddd"),
+      // month: dayjs(lastWatered).format("MMM"),
+      message: "Previously watered",
     },
   ];
 
@@ -186,18 +237,42 @@ export default function () {
     </div>
   );
 
+  let showCareHistory = (
+    <div className="m-5">
+      <p>Care History</p>
+      <div className="flex flex-col">
+        {careHistory.map((p) => (
+          <div className="flex my-2">
+            <div className="flex items-center rounded-lg bg-light mr-2 px-1 py-2">
+              <p.icon className="m-1"></p.icon>
+            </div>
+            <div className="flex p-2 bg-slate-50 rounded-md items-center grow justify-between">
+              <div className="flex p-2">
+                <p>{p.message}</p>
+                <div className="pl-2 font-semibold">{p.date}</div>
+              </div>
+              <div className="pr-2">
+                <IconPencil></IconPencil>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   let showImages;
-  if (plant.picturePath) {
+  if (plant.pictures && plant.pictures.length > 0) {
     showImages = (
       <div>
         <Carousel withIndicators>
-          {plant.picturePath && (
+          {plant.pictures.map((pic) => (
             <Carousel.Slide>
               <img
-                src={`http://localhost:3000/plant/${plant._id}/picture/${plant.picturePath}`}
+                src={`http://localhost:3000/plant/${plant._id}/picture/${pic}`}
               ></img>
             </Carousel.Slide>
-          )}
+          ))}
         </Carousel>
       </div>
     );
@@ -213,27 +288,6 @@ export default function () {
       </div>
     );
   }
-
-  // submitForm(EVENT(), ????)
-  const submitForm = async (e, body) => {
-    console.log(body);
-    let json = {
-      notes: noteValue,
-    };
-    if (body) {
-      json = body;
-    }
-    let response = await fetch("http://localhost:3000/" + plantId, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(json),
-    });
-    console.log(response);
-    location.reload();
-  };
 
   return (
     <div className="font-body text-base	">
@@ -279,6 +333,7 @@ export default function () {
 
             <Tabs.Panel value="tasks">
               <div>{alertTasks}</div>
+              <div>{showCareHistory}</div>
             </Tabs.Panel>
 
             <Tabs.Panel value="care">
@@ -385,7 +440,7 @@ export default function () {
                   <button
                     className="flex justify-end text-sm hover:cursor-pointer p-2 items-center"
                     type="button"
-                    onClick={submitForm}
+                    onClick={fileUpload}
                   >
                     <div className="pr-1">Save</div>
                   </button>

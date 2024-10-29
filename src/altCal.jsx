@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { useState, useEffect } from "react";
-import { Calendar, Month } from "@mantine/dates";
+import { Calendar } from "@mantine/dates";
 import { useParams } from "react-router-dom";
 import { Indicator, ScrollArea } from "@mantine/core";
 import { IconDroplet, IconSpray, IconMoodSmile } from "@tabler/icons-react";

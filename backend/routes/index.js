@@ -4,6 +4,7 @@ var router = express.Router();
 const passport = require("passport");
 const Plant = require("../models/plant");
 const PlantUser = require("../models/plantUser");
+const uuid = require("uuid");
 
 /* GET home page. */
 router.get("/", async function (req, res, next) {
@@ -92,14 +93,16 @@ router.post("/addPage", async (req, res, next) => {
       purchaseDate: req.body.purchaseDate,
       plantIcon: req.body.plantIcon,
       user: req.user,
+      pictures: [],
     });
     if (req.files && Object.keys(req.files).length != 0) {
       let picture;
       let uploadPath;
+      let randomValue = uuid.v4();
       // The name of the input field (i.e. "picture") is used to retrieve the uploaded file
       picture = req.files.picture;
-      uploadPath = __dirname + "/../plant-pictures/" + picture.name;
-      plant.picturePath = picture.name;
+      uploadPath = __dirname + "/../plant-pictures/" + randomValue;
+      plant.pictures.push(randomValue);
 
       // Use the mv() method to place the file somewhere on your server
       picture.mv(uploadPath, function (err) {
@@ -162,6 +165,25 @@ router.post("/:plant", async (req, res, next) => {
       plant.plantIcon = req.body.plantIcon;
     }
 
+    if (req.files && Object.keys(req.files).length != 0) {
+      req.files.picture.forEach((f) => {
+        let picture;
+        let uploadPath;
+        let randomValue = uuid.v4();
+        // The name of the input field (i.e. "picture") is used to retrieve the uploaded file
+        picture = f;
+        uploadPath = __dirname + "/../plant-pictures/" + randomValue;
+        plant.pictures.push(randomValue);
+
+        // Use the mv() method to place the file somewhere on your server
+        picture.mv(uploadPath, function (err) {
+          if (err) {
+            return res.status(500).send(err);
+          }
+        });
+      });
+    }
+
     await plant.save();
     res.json(plant);
   } catch (e) {
@@ -169,6 +191,5 @@ router.post("/:plant", async (req, res, next) => {
     res.sendStatus(500);
   }
 });
-
 
 module.exports = router;

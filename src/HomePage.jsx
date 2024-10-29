@@ -35,13 +35,14 @@ export default function () {
   const gallery = [];
   for (let i = 0; i < plants.length; i++) {
     var plant = plants[i];
-    if (plant.picturePath) {
-      gallery.push({
-        _id: plant._id,
-        src: `http://localhost:3000/plant/${plant._id}/picture/${plant.picturePath}`,
-        type: plant.type,
+    if (plant.pictures.length > 0) {
+      plant.pictures.map((pic) => {
+        gallery.push({
+          _id: plant._id,
+          src: `http://localhost:3000/plant/${plant._id}/picture/${pic}`,
+          type: plant.type,
+        });
       });
-      console.log(plant.src);
     }
   }
 

@@ -21,7 +21,7 @@ const PlantSchema = new Schema({
     min: 1,
     max: 30,
   },
-  picturePath: [
+  pictures: [
     { type: String, required: false }
   ],
   notes: { type: String, required: false, maxLength: 1500 },
