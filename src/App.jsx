@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "@mantine/core/styles.css";
 import "@mantine/carousel/styles.css";
 import "@mantine/dropzone/styles.css";
-import '@mantine/dates/styles.css';
+import "@mantine/dates/styles.css";
 import {
   UnstyledButton,
   Text,
@@ -46,16 +46,17 @@ export default function () {
     callServer();
   }, []);
 
+  const getPlants = async () => {
+    let response = await (
+      await fetch("http://localhost:3000/", {
+        credentials: "include",
+      })
+    ).json();
+    setPlants(response);
+  };
+
   useEffect(() => {
-    const callServer = async () => {
-      let response = await (
-        await fetch("http://localhost:3000/", {
-          credentials: "include",
-        })
-      ).json();
-      setPlants(response);
-    };
-    callServer();
+    getPlants();
   }, []);
 
   const mainLinks = links.map((link) => (
@@ -124,7 +125,7 @@ export default function () {
         <main className="lg:pl-72 flex-1">
           <div>
             <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6 m-9">
-              <Outlet context={[user, setUser]} />
+              <Outlet context={{ user: [user, setUser], getPlants }} />
             </div>
           </div>
         </main>

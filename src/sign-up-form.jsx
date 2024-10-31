@@ -18,7 +18,7 @@ export default function () {
   const [visible, { toggle }] = useDisclosure(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useOutletContext();
+  const { user: [user, setUser] } = useOutletContext();
   const [plants, setPlants] = useState([]);
   const navigate = useNavigate();
 

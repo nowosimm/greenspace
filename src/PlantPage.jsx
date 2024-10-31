@@ -136,14 +136,14 @@ export default function () {
     location.reload();
   };
 
-  let wateringMessage = "";
+  let wateringMessage = "dookiet";
   const nextWatering = dayjs(plant.lastWatered)
     .startOf("day")
     .add(plant.water, "day");
-  if (dayjs().isBefore(nextWatering)) {
+  if (today.isBefore(nextWatering)) {
     wateringMessage = dayjs().to(nextWatering, true) + " until next watering";
   }
-  if (today == nextWatering) {
+  if (today.isSame(nextWatering)) {
     wateringMessage = plant.type + " needs watering today";
   }
   if (isWatered == true) {
@@ -155,14 +155,14 @@ export default function () {
   }
   console.log(wateringMessage);
 
-  let mistingMessage = "";
+  let mistingMessage = "dookier";
   const nextMisting = dayjs(plant.lastMisted)
     .startOf("day")
     .add(plant.humidity, "day");
   if (today.isBefore(nextMisting)) {
     mistingMessage = dayjs().to(nextMisting, true) + " until next misting";
   }
-  if (dayjs().isSame(nextMisting)) {
+  if (today.isSame(nextMisting)) {
     mistingMessage = plant.type + " needs misting today";
   }
   if (isMisted == true) {
@@ -194,15 +194,11 @@ export default function () {
     {
       icon: IconSpray,
       date: dayjs(lastMisted).format("MM-DD-YYYY"),
-      // day: dayjs(lastMisted).format("ddd"),
-      // month: dayjs(lastMisted).format("MMM"),
       message: "Previously misted",
     },
     {
       icon: IconDroplet,
       date: dayjs(lastWatered).format("MM-DD-YYYY"),
-      // day: dayjs(lastWatered).format("ddd"),
-      // month: dayjs(lastWatered).format("MMM"),
       message: "Previously watered",
     },
   ];
@@ -265,7 +261,7 @@ export default function () {
   if (plant.pictures && plant.pictures.length > 0) {
     showImages = (
       <div>
-        <Carousel withIndicators>
+        <Carousel withIndicators className="bg-slate-50">
           {plant.pictures.map((pic) => (
             <Carousel.Slide>
               <img

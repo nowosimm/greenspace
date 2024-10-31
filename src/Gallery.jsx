@@ -21,6 +21,7 @@ export default function () {
   const gallery = [];
   for (let i = 0; i < plants.length; i++) {
     var plant = plants[i];
+    <div></div>
     if (plant.pictures.length > 0) {
       plant.pictures.map((pic) => {
         gallery.push({
@@ -29,6 +30,7 @@ export default function () {
           type: plant.type,
         });
       });
+
     }
   }
   return (

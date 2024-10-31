@@ -19,7 +19,7 @@ import "../css/Gallery.css";
 
 export default function () {
   const [plants, setPlants] = useState([]);
-  const [user, setUser] = useOutletContext();
+  const { user: [user, setUser] } = useOutletContext();
   useEffect(() => {
     const callServer = async () => {
       let response = await (

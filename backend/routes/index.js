@@ -152,11 +152,15 @@ router.post("/:plant", async (req, res, next) => {
     }
     if (req.body.lastMisted != undefined) {
       plant.lastMisted = req.body.lastMisted;
-      plant.humidityHistory.push(req.body.lastMisted);
+      if (plant.humidityHistory.indexOf(req.body.lastMisted) === -1) {
+        plant.humidityHistory.push(req.body.lastMisted);
+      }
     }
     if (req.body.lastWatered != undefined) {
       plant.lastWatered = req.body.lastWatered;
-      plant.waterHistory.push(req.body.lastWatered);
+      if (plant.waterHistory.indexOf(req.body.lastWatered) === -1) {
+        plant.waterHistory.push(req.body.lastWatered);
+      }
     }
     if (req.body.purchaseDate != undefined) {
       plant.purchaseDate = req.body.purchaseDate;

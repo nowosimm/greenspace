@@ -1,6 +1,6 @@
 import { Input, Radio, Group, Text, rem, Slider, Button } from "@mantine/core";
 import { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import { DateInput } from "@mantine/dates";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import {
@@ -37,6 +37,7 @@ export default function () {
   const [files, setFiles] = useState([]);
   const openRef = useRef(null);
   const [value, setValue] = useState(null);
+  const { getPlants } = useOutletContext();
   const navigate = useNavigate();
 
   const submitForm = async () => {
@@ -61,6 +62,7 @@ export default function () {
       credentials: "include",
     });
     console.log(response);
+    await getPlants();
     navigate(`/`);
   };
   return (

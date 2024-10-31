@@ -13,7 +13,7 @@ export default function () {
   const today = dayjs().startOf("day");
   const [selected, setSelected] = useState(today);
   let { plantId } = useParams();
-  const [user, setUser] = useOutletContext();
+  const { user: [user, setUser] } = useOutletContext();
   useEffect(() => {
     const callServer = async () => {
       let response = await (
