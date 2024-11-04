@@ -1,4 +1,3 @@
-import { ScrollArea, Center, Grid } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/Gallery.css";
@@ -21,7 +20,6 @@ export default function () {
   const gallery = [];
   for (let i = 0; i < plants.length; i++) {
     var plant = plants[i];
-    <div></div>
     if (plant.pictures.length > 0) {
       plant.pictures.map((pic) => {
         gallery.push({
@@ -35,12 +33,11 @@ export default function () {
   }
   return (
     <div className="font-body">
-      <ScrollArea h={1200}>
         <div className="grid grid-cols-3 gap-5 border-5 m-5">
           {gallery.map((p) => (
-            <Link to={`/plant/${p._id}`}>
-              <div className="container">
-                <img src={p.src} className="image"></img>
+            <Link to={`/plant/${p._id}`} className="background">
+              <div  className="container">
+                <img src={p.src} className="image" />
                 <div className="middle">
                   <div className="text">{p.type}</div>
                 </div>
@@ -48,7 +45,6 @@ export default function () {
             </Link>
           ))}
         </div>
-      </ScrollArea>
     </div>
   );
 }

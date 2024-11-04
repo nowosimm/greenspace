@@ -1,3 +1,15 @@
+.homePageContainer {
+  display: flex;
+  height: 100%;
+}
+
+.background {
+  background-color: #f1f5f9;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .container {
   position: relative;
@@ -5,11 +17,16 @@
 
 .image {
   opacity: 1;
-  display: block;
-  width: 100%;
-  height: auto;
   transition: .5s ease;
   backface-visibility: hidden;
+}
+
+.homePageImage {
+  opacity: 1;
+  transition: .5s ease;
+  backface-visibility: hidden;
+  height: 100%;
+  width: auto;
 }
 
 .middle {
@@ -23,11 +40,15 @@
   text-align: center;
 }
 
-.container:hover .image {
-  opacity: 0.3;
+.background:hover .image {
+  opacity: 0.2;
 }
 
-.container:hover .middle {
+.background:hover .homePageImage {
+  opacity: 0.2;
+}
+
+.background:hover .middle {
   opacity: 1;
 }
 

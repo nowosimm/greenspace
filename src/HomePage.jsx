@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { Pill, ScrollArea, Image, Avatar, Center } from "@mantine/core";
+import { Pill, ScrollArea, Center } from "@mantine/core";
 import { Link, useOutletContext } from "react-router-dom";
 import{
   IconDroplet,
@@ -83,7 +83,7 @@ export default function () {
     const plantName = randomItem.type;
     const link = `/plant/${randomItem._id}`;
     randomGallery = (
-      <Link to={link}>
+      <Link to={link} className="background">
         <div className="container">
           <img src={randomSrc} className="image rounded-xl"></img>
           <div className="middle">
@@ -93,7 +93,7 @@ export default function () {
       </Link>
     );
   } else {
-    randomGallery = <div>no images SADLY</div>;
+    randomGallery = <div>Greenspace is better with pictures!</div>;
   }
 
   const mockContent = [
@@ -235,7 +235,7 @@ export default function () {
   let homeContent;
   if (user.username) {
     homeContent = (
-      <div>
+      <div className="flex">
         <div className="grid grid-cols-3 gap-8 font-body">
           {/* column one */}
           <div>
@@ -253,7 +253,7 @@ export default function () {
                 Featured Plant
               </h1>
             </div>
-            <div>{randomGallery}</div>
+            <div className="homePageContainer">{randomGallery}</div>
           </div>
           {/* column three */}
           <div>
