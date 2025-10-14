@@ -7,7 +7,10 @@ import {
   Text,
   Checkbox,
   Center,
+  Tooltip,
+  Paper,
 } from "@mantine/core";
+import { DateInput } from "@mantine/dates";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import "@mantine/carousel/styles.css";
 import { useParams } from "react-router-dom";
@@ -31,7 +34,22 @@ import {
   IconUpload,
   IconX,
   IconPencil,
+  IconCheck,
 } from "@tabler/icons-react";
+import classes from "../css/CardsCarousel.module.css";
+
+function Card({ image }) {
+  console.log({ backgroundImage: `url(${image})` });
+  return (
+    <Paper
+      shadow={0}
+      p="xl"
+      radius="md"
+      style={{ backgroundImage: `url(${encodeURI(image)})` }}
+      className={classes.card}
+    ></Paper>
+  );
+}
 
 export default function () {
   const iconStyle = { width: rem(12), height: rem(12) };
@@ -44,6 +62,7 @@ export default function () {
   const [isMisted, setIsMisted] = useState(false);
   const [lastWatered, setLastWatered] = useState(today.toDate());
   const [lastMisted, setLastMisted] = useState(today.toDate());
+  const [value, setValue] = useState();
 
   const getPlant = async () => {
     let response = await (
@@ -104,7 +123,7 @@ export default function () {
     if (files.length > 0) {
       files.forEach((f) => {
         formData.append("picture", f);
-      })
+      });
     }
 
     let response = await fetch("http://localhost:3000/" + plantId, {
@@ -248,7 +267,63 @@ export default function () {
                 <div className="pl-2 font-semibold">{p.date}</div>
               </div>
               <div className="pr-2">
-                <IconPencil></IconPencil>
+                <Tooltip
+                  label="Edit Date"
+                  withArrow
+                  position="bottom"
+                  color="rgba(134, 153, 129, 1)"
+                >
+                  <IconPencil variant="default" size={20}></IconPencil>
+                </Tooltip>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  let showCareHistory2 = (
+    <div className="m-5">
+      <p>Care History</p>
+      <div className="flex flex-col">
+        {careHistory.map((p) => (
+          <div className="flex my-2">
+            <div className="flex items-center rounded-lg bg-light mr-2 px-1 py-2">
+              <p.icon className="m-1"></p.icon>
+            </div>
+            <div className="flex p-2 bg-slate-50 rounded-md items-center grow justify-between">
+              <div className="flex p-2">
+                <p>{p.message}</p>
+                <div className="pl-2 font-semibold">
+                  <DateInput
+                    onChange={setValue}
+                    placeholder={p.date}
+                    variant="filled"
+                    radius="lg"
+                    size="xs"
+                  />
+                </div>
+              </div>
+              <div className="pr-2 flex">
+                <Tooltip
+                  label="Update Changes"
+                  withArrow
+                  position="bottom"
+                  color="rgba(134, 153, 129, 1)"
+                  className="mr-1"
+                >
+                  <IconCheck variant="default" size={20}></IconCheck>
+                </Tooltip>
+                <Tooltip
+                  label="Discard Changes"
+                  withArrow
+                  position="bottom"
+                  color="rgba(134, 153, 129, 1)"
+                  className="ml-1"
+                >
+                  <IconX variant="default" size={20}></IconX>
+                </Tooltip>
               </div>
             </div>
           </div>
@@ -260,17 +335,15 @@ export default function () {
   let showImages;
   if (plant.pictures && plant.pictures.length > 0) {
     showImages = (
-      <div>
-        <Carousel withIndicators className="bg-slate-50">
-          {plant.pictures.map((pic) => (
-            <Carousel.Slide>
-              <img
-                src={`http://localhost:3000/plant/${plant._id}/picture/${pic}`}
-              ></img>
-            </Carousel.Slide>
-          ))}
-        </Carousel>
-      </div>
+      <Carousel withIndicators className=" items-center">
+        {plant.pictures.map((pic) => (
+          <Carousel.Slide>
+            <Card
+              image={`http://localhost:3000/plant/${plant._id}/picture/${pic}`}
+            />
+          </Carousel.Slide>
+        ))}
+      </Carousel>
     );
   } else {
     showImages = (
@@ -287,8 +360,10 @@ export default function () {
 
   return (
     <div className="font-body text-base	">
-      <div className="grid grid-cols-2">
-        <div>{showImages}</div>
+      <div
+        className="grid grid-cols-2 auto-rows-fr"
+      >
+        <div className="">{showImages}</div>
 
         <div className="mx-5">
           <div className="flex justify-between">
@@ -330,6 +405,7 @@ export default function () {
             <Tabs.Panel value="tasks">
               <div>{alertTasks}</div>
               <div>{showCareHistory}</div>
+              <div>{showCareHistory2}</div>
             </Tabs.Panel>
 
             <Tabs.Panel value="care">

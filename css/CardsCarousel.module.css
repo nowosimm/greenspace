@@ -1,11 +1,14 @@
 .card {
-  height: rem(440px);
+  height: rem(720px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
-  background-size: cover;
+  background-repeat: no-repeat;
+  background-size: contain;
   background-position: center;
+  background-color: transparent;
+  /* margin: 0 2em; */
 }
 
 .title {

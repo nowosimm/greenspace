@@ -234,7 +234,7 @@ export default function () {
                 <DateInput
                   radius="lg"
                   onChange={setLastMisted}
-                  label="Last Watered"
+                  label="Last Misted"
                   placeholder="Enter date of last misting"
                   name="lastMisted"
                   value={lastMisted}
